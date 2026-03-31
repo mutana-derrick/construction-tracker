@@ -6,15 +6,15 @@
 
 All 7 core migrations successfully created and executed:
 
-| Migration | Status | Fields |
-|-----------|--------|--------|
-| `projects` | ✅ Ran | id, name, location, description, created_by, timestamps |
-| `equipment_logs` | ✅ Ran | id, project_id, user_id, date, equipment_type, equipment_id, activity, planned_output, actual_output, working_hours, available_hours, fuel_used, comment, timestamps |
-| `equipment_costs` | ✅ Ran | id, project_id, user_id, date, activity, equipment_type, units_done, cost_per_unit, total_cost, timestamps |
-| `productivity_logs` | ✅ Ran | id, project_id, user_id, date, activity, equipment_name, workers, output, comment, timestamps |
-| `casual_labour_logs` | ✅ Ran | id, project_id, user_id, date, activity, labour_classification, number_of_workers, wage, total_cost, timestamps |
-| `material_usage` | ✅ Ran | id, project_id, user_id, date, material_name, activity, planned_qty, used_qty, timestamps |
-| `material_costs` | ✅ Ran | id, project_id, user_id, date, material_name, used_qty, cost_per_item, total, timestamps |
+| Migration            | Status | Fields                                                                                                                                                               |
+| -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `projects`           | ✅ Ran | id, name, location, description, created_by, timestamps                                                                                                              |
+| `equipment_logs`     | ✅ Ran | id, project_id, user_id, date, equipment_type, equipment_id, activity, planned_output, actual_output, working_hours, available_hours, fuel_used, comment, timestamps |
+| `equipment_costs`    | ✅ Ran | id, project_id, user_id, date, activity, equipment_type, units_done, cost_per_unit, total_cost, timestamps                                                           |
+| `productivity_logs`  | ✅ Ran | id, project_id, user_id, date, activity, equipment_name, workers, output, comment, timestamps                                                                        |
+| `casual_labour_logs` | ✅ Ran | id, project_id, user_id, date, activity, labour_classification, number_of_workers, wage, total_cost, timestamps                                                      |
+| `material_usage`     | ✅ Ran | id, project_id, user_id, date, material_name, activity, planned_qty, used_qty, timestamps                                                                            |
+| `material_costs`     | ✅ Ran | id, project_id, user_id, date, material_name, used_qty, cost_per_item, total, timestamps                                                                             |
 
 ### 2. **Eloquent Models Created**
 
@@ -40,17 +40,20 @@ All 7 models created with proper structure:
 #### 🔧 Key Computed Attributes (Handled Dynamically):
 
 **EquipmentLog:**
+
 ```php
 $log->productivity         // actual_output / working_hours
 $log->utilization         // (working_hours / available_hours) * 100
 ```
 
 **ProductivityLog:**
+
 ```php
 $log->labour_productivity // output / workers
 ```
 
 **MaterialUsage:**
+
 ```php
 $usage->difference        // planned_qty - used_qty
 ```
@@ -58,6 +61,7 @@ $usage->difference        // planned_qty - used_qty
 ### 4. **Relationships (Eloquent)**
 
 #### Project Model Relationships:
+
 ```php
 $project->creator()           // User who created project
 $project->equipmentLogs()     // All equipment logs
@@ -69,6 +73,7 @@ $project->materialCosts()     // All material costs
 ```
 
 #### User Model Relationships:
+
 ```php
 $user->createdProjects()      // Projects created by user
 $user->equipmentLogs()        // Equipment logs created by user
@@ -82,6 +87,7 @@ $user->materialCosts()        // Material costs created by user
 ### 5. **Database Foreign Keys**
 
 All tables have proper foreign key constraints with `onDelete('cascade')`:
+
 - `project_id` → references `projects.id`
 - `user_id` → references `users.id`
 - `created_by` (in projects) → references `users.id`
@@ -188,15 +194,15 @@ echo $log->utilization;
 
 ## 📋 File Locations
 
-| File | Location |
-|------|----------|
-| Project | `app/Models/Project.php` |
-| EquipmentLog | `app/Models/EquipmentLog.php` |
-| EquipmentCost | `app/Models/EquipmentCost.php` |
+| File            | Location                         |
+| --------------- | -------------------------------- |
+| Project         | `app/Models/Project.php`         |
+| EquipmentLog    | `app/Models/EquipmentLog.php`    |
+| EquipmentCost   | `app/Models/EquipmentCost.php`   |
 | ProductivityLog | `app/Models/ProductivityLog.php` |
 | CasualLabourLog | `app/Models/CasualLabourLog.php` |
-| MaterialUsage | `app/Models/MaterialUsage.php` |
-| MaterialCost | `app/Models/MaterialCost.php` |
+| MaterialUsage   | `app/Models/MaterialUsage.php`   |
+| MaterialCost    | `app/Models/MaterialCost.php`    |
 
 ---
 
@@ -219,7 +225,7 @@ Now we will build the API controllers and routes:
 ✅ **Proper Relationships** - All models connected with Eloquent relationships  
 ✅ **Type Safety** - Decimal casting for all money/quantity fields  
 ✅ **Date Casting** - Date fields automatically cast  
-✅ **Clean Code** - Following Laravel conventions and MVC pattern  
+✅ **Clean Code** - Following Laravel conventions and MVC pattern
 
 ---
 
