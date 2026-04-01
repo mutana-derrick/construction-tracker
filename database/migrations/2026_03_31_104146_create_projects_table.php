@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('location');
             $table->text('description')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('expected_end_date')->nullable();
+            $table->decimal('budget', 12, 2)->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

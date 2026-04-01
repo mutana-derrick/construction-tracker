@@ -15,6 +15,14 @@ use Illuminate\Validation\ValidationException;
 class NewPasswordController extends Controller
 {
     /**
+     * Display the password reset view.
+     */
+    public function create(Request $request)
+    {
+        return view('auth.reset-password', ['request' => $request]);
+    }
+
+    /**
      * Handle an incoming new password request.
      *
      * @throws ValidationException

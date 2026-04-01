@@ -30,7 +30,28 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => 'viewer', // Default role is viewer
         ];
+    }
+
+    /**
+     * Indicate that the user should be a Recorder
+     */
+    public function recorder(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'recorder',
+        ]);
+    }
+
+    /**
+     * Indicate that the user should be a Viewer
+     */
+    public function viewer(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'viewer',
+        ]);
     }
 
     /**

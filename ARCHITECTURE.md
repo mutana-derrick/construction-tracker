@@ -225,7 +225,7 @@ REPORTS
 WHEN USER EDITS A LOG:
 
 1. Check if created_at + 5 minutes > now()
-   
+
    if (now()->diffInMinutes($log->created_at) > 5) {
        // Redirect with error: "Can't edit logs after 5 minutes"
    }
@@ -300,6 +300,7 @@ WHEN USER EDITS A LOG:
 ## Deployment & Performance Considerations
 
 ### Caching Strategy (To Implement)
+
 ```
 - Route caching: php artisan route:cache
 - Config caching: php artisan config:cache
@@ -308,6 +309,7 @@ WHEN USER EDITS A LOG:
 ```
 
 ### Frontend Optimization (To Implement)
+
 ```
 - Asset minification: npm run build
 - Lazy loading for images
@@ -316,6 +318,7 @@ WHEN USER EDITS A LOG:
 ```
 
 ### Security (Implemented)
+
 ```
 - ✅ CSRF protection on all forms
 - ✅ SQL injection prevention (Eloquent)
@@ -395,6 +398,7 @@ Legend: ✅ = Phase 1 Complete | 🔧 = Phase 2 To Do
 ## Summary
 
 This architecture provides:
+
 - ✅ Clean separation of concerns (MVC)
 - ✅ Authorization & authentication
 - ✅ Modern, responsive UI
