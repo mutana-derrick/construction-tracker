@@ -30,7 +30,7 @@
 
     <!-- Validation Errors -->
     @if ($errors->any())
-    <div class="rounded-md bg-red-50 p-4 mb-6 border border-red-200">
+    <div class="rounded-md bg-red-50 p-4 mb-6 border border-red-200 shadow-sm">
         <div class="text-red-800 font-semibold text-sm">Please fix the following errors:</div>
         <ul class="list-disc list-inside text-red-600 text-sm mt-2">
             @foreach ($errors->all() as $error)
@@ -41,7 +41,7 @@
     @endif
 
     <!-- Form -->
-    <form action="{{ route('productivity-logs.update', $log) }}" method="POST" class="card">
+    <form action="{{ route('productivity-logs.update', $log) }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
         @csrf
         @method('PUT')
 
@@ -57,7 +57,7 @@
                     id="activity" 
                     name="activity" 
                     value="{{ old('activity', $log->activity) }}"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('activity') ? 'border-red-500' : '' }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('activity') ? 'border-red-500' : '' }}"
                     required
                 >
                 @if ($errors->has('activity'))
@@ -75,7 +75,7 @@
                     id="equipment_name" 
                     name="equipment_name" 
                     value="{{ old('equipment_name', $log->equipment_name) }}"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('equipment_name') ? 'border-red-500' : '' }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('equipment_name') ? 'border-red-500' : '' }}"
                     required
                 >
                 @if ($errors->has('equipment_name'))
@@ -100,7 +100,7 @@
                         name="workers" 
                         value="{{ old('workers', $log->workers) }}"
                         min="1"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('workers') ? 'border-red-500' : '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('workers') ? 'border-red-500' : '' }}"
                         required
                     >
                     @if ($errors->has('workers'))
@@ -120,7 +120,7 @@
                         value="{{ old('output', $log->output) }}"
                         step="0.01"
                         min="0"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('output') ? 'border-red-500' : '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('output') ? 'border-red-500' : '' }}"
                         required
                     >
                     @if ($errors->has('output'))
@@ -149,7 +149,7 @@
                 id="comment" 
                 name="comment" 
                 rows="4"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('comment') ? 'border-red-500' : '' }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('comment') ? 'border-red-500' : '' }}"
             >{{ old('comment', $log->comment) }}</textarea>
             @if ($errors->has('comment'))
             <p class="text-red-600 text-sm mt-1">{{ $errors->first('comment') }}</p>
@@ -158,10 +158,10 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-4">
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
                 ✓ Save Changes
             </button>
-            <a href="{{ route('productivity-logs.show', $log) }}" class="btn-secondary">
+            <a href="{{ route('productivity-logs.show', $log) }}" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-lg transition-all duration-200">
                 Cancel
             </a>
         </div>

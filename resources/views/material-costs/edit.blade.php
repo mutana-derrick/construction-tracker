@@ -14,7 +14,7 @@
         $minutesRemaining = max(0, 5 - $minutesElapsed);
     @endphp
     
-    <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6">
+    <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6 shadow-sm">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-semibold text-yellow-900">⏱️ Time Remaining</p>
@@ -30,7 +30,7 @@
 
     <!-- Validation Errors -->
     @if ($errors->any())
-    <div class="rounded-md bg-red-50 p-4 mb-6 border border-red-200">
+    <div class="rounded-md bg-red-50 p-4 mb-6 border border-red-200 shadow-sm">
         <div class="text-red-800 font-semibold text-sm">Please fix the following errors:</div>
         <ul class="list-disc list-inside text-red-600 text-sm mt-2">
             @foreach ($errors->all() as $error)
@@ -41,7 +41,7 @@
     @endif
 
     <!-- Form -->
-    <form action="{{ route('material-costs.update', $log) }}" method="POST" class="card">
+    <form action="{{ route('material-costs.update', $log) }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
         @csrf
         @method('PUT')
 
@@ -55,7 +55,7 @@
                 id="material_name" 
                 name="material_name" 
                 value="{{ old('material_name', $log->material_name) }}"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('material_name') ? 'border-red-500' : '' }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('material_name') ? 'border-red-500' : '' }}"
                 required
             >
             @if ($errors->has('material_name'))
@@ -64,7 +64,7 @@
         </div>
 
         <!-- Material Cost Section -->
-        <div class="bg-gray-50 rounded-lg p-6 mb-8 border border-gray-200">
+        <div class="bg-yellow-50 rounded-lg p-6 mb-8 border border-yellow-200 shadow-sm">
             <h3 class="font-semibold text-gray-900 mb-6">💰 Material Cost Calculation</h3>
             
             <div class="grid grid-cols-3 gap-6">
@@ -80,7 +80,7 @@
                         value="{{ old('used_qty', $log->used_qty) }}"
                         step="0.01"
                         min="0"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('used_qty') ? 'border-red-500' : '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('used_qty') ? 'border-red-500' : '' }}"
                         required
                     >
                     @if ($errors->has('used_qty'))
@@ -102,7 +102,7 @@
                             value="{{ old('cost_per_item', $log->cost_per_item) }}"
                             step="0.01"
                             min="0"
-                            class="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('cost_per_item') ? 'border-red-500' : '' }}"
+                            class="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('cost_per_item') ? 'border-red-500' : '' }}"
                             required
                         >
                     </div>
@@ -116,7 +116,7 @@
                     <label class="block text-sm font-semibold text-gray-900 mb-2">
                         Total Cost
                     </label>
-                    <div class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 font-semibold">
+                    <div class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-yellow-100 text-yellow-700 font-semibold shadow-sm">
                         $<span id="totalCost">{{ number_format($log->total, 2) }}</span>
                     </div>
                 </div>
@@ -125,10 +125,10 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-4">
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
                 ✓ Save Changes
             </button>
-            <a href="{{ route('material-costs.show', $log) }}" class="btn-secondary">
+            <a href="{{ route('material-costs.show', $log) }}" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-lg transition-all duration-200">
                 Cancel
             </a>
         </div>

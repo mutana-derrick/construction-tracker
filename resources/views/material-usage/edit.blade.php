@@ -30,7 +30,7 @@
 
     <!-- Validation Errors -->
     @if ($errors->any())
-    <div class="rounded-md bg-red-50 p-4 mb-6 border border-red-200">
+    <div class="rounded-md bg-red-50 p-4 mb-6 border border-red-200 shadow-sm">
         <div class="text-red-800 font-semibold text-sm">Please fix the following errors:</div>
         <ul class="list-disc list-inside text-red-600 text-sm mt-2">
             @foreach ($errors->all() as $error)
@@ -41,7 +41,7 @@
     @endif
 
     <!-- Form -->
-    <form action="{{ route('material-usage.update', $log) }}" method="POST" class="card">
+    <form action="{{ route('material-usage.update', $log) }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
         @csrf
         @method('PUT')
 
@@ -57,7 +57,7 @@
                     id="material_name" 
                     name="material_name" 
                     value="{{ old('material_name', $log->material_name) }}"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('material_name') ? 'border-red-500' : '' }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('material_name') ? 'border-red-500' : '' }}"
                     required
                 >
                 @if ($errors->has('material_name'))
@@ -75,7 +75,7 @@
                     id="activity" 
                     name="activity" 
                     value="{{ old('activity', $log->activity) }}"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('activity') ? 'border-red-500' : '' }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('activity') ? 'border-red-500' : '' }}"
                     required
                 >
                 @if ($errors->has('activity'))
@@ -85,7 +85,7 @@
         </div>
 
         <!-- Material Usage Section -->
-        <div class="bg-gray-50 rounded-lg p-6 mb-8 border border-gray-200">
+        <div class="bg-yellow-50 rounded-lg p-6 mb-8 border border-yellow-200 shadow-sm">
             <h3 class="font-semibold text-gray-900 mb-6">📦 Material Usage Tracking</h3>
             
             <div class="grid grid-cols-3 gap-6">
@@ -101,7 +101,7 @@
                         value="{{ old('planned_qty', $log->planned_qty) }}"
                         step="0.01"
                         min="0"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('planned_qty') ? 'border-red-500' : '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('planned_qty') ? 'border-red-500' : '' }}"
                         required
                     >
                     @if ($errors->has('planned_qty'))
@@ -121,7 +121,7 @@
                         value="{{ old('used_qty', $log->used_qty) }}"
                         step="0.01"
                         min="0"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent {{ $errors->has('used_qty') ? 'border-red-500' : '' }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('used_qty') ? 'border-red-500' : '' }}"
                         required
                     >
                     @if ($errors->has('used_qty'))
@@ -141,7 +141,7 @@
             </div>
 
             <!-- Usage Efficiency Display -->
-            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-sm">
                 <p class="text-sm text-blue-900">
                     <strong>📊 Status:</strong> <span id="efficiencyStatus">{{ $log->planned_qty - $log->used_qty > 0 ? '✓ Under budget' : ($log->planned_qty - $log->used_qty < 0 ? '⚠️ Over budget' : '◆ Exact usage') }}</span>
                 </p>
@@ -150,10 +150,10 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-4">
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
                 ✓ Save Changes
             </button>
-            <a href="{{ route('material-usage.show', $log) }}" class="btn-secondary">
+            <a href="{{ route('material-usage.show', $log) }}" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-lg transition-all duration-200">
                 Cancel
             </a>
         </div>

@@ -30,7 +30,7 @@
                                     id="project_id"
                                     name="project_id"
                                     required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm"
                                 >
                                     <option value="">-- Choose a project --</option>
                                     @foreach ($projects as $project)
@@ -49,7 +49,7 @@
                                     name="date"
                                     required
                                     value="{{ old('date', date('Y-m-d')) }}"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm"
                                 />
                             </div>
                         </div>

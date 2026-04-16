@@ -12,7 +12,7 @@
       <!-- Logo and Branding -->
       <div class="mb-8 text-center">
         <h1 class="text-4xl font-bold text-gray-900">
-          <span class="text-primary-400">⚙️</span> ConstructTrack
+          <span class="text-yellow-600">⚙️</span> ConstructTrack
         </h1>
         <p class="mt-2 text-gray-600">Construction Productivity Tracking System</p>
       </div>

@@ -11,7 +11,7 @@
           Back to Productivity Logs
         </a>
         <div class="flex items-center gap-3 mb-2">
-          <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
           </svg>
           <h1 class="text-3xl font-bold text-gray-900">New Productivity Log</h1>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Form -->
-    <form action="{{ route('productivity-logs.store') }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8">
+    <form action="{{ route('productivity-logs.store') }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
         @csrf
         <input type="hidden" name="project_id" value="{{ $project->id }}">
 
@@ -59,7 +59,7 @@
         <!-- Activity & Equipment Section -->
         <div class="space-y-6 mb-8 pb-8 border-b border-gray-200">
           <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             Work Details
@@ -69,7 +69,7 @@
             <!-- Activity -->
             <div>
                 <label for="activity" class="block text-sm font-semibold text-gray-900 mb-2">Activity *</label>
-                <input type="text" id="activity" name="activity" class="w-full px-4 py-2.5 border @error('activity') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                <input type="text" id="activity" name="activity" class="w-full px-4 py-2.5 border @error('activity') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                     placeholder="e.g., Foundation Excavation" 
                     value="{{ old('activity') }}" required>
                 @error('activity') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -78,7 +78,7 @@
             <!-- Equipment -->
             <div>
                 <label for="equipment_name" class="block text-sm font-semibold text-gray-900 mb-2">Equipment *</label>
-                <input type="text" id="equipment_name" name="equipment_name" class="w-full px-4 py-2.5 border @error('equipment_name') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                <input type="text" id="equipment_name" name="equipment_name" class="w-full px-4 py-2.5 border @error('equipment_name') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                     placeholder="e.g., CAT 336 Excavator" 
                     value="{{ old('equipment_name') }}" required>
                 @error('equipment_name') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -99,7 +99,7 @@
               <!-- Workers -->
               <div>
                   <label for="workers" class="block text-sm font-semibold text-gray-900 mb-2">Number of Workers *</label>
-                  <input type="number" id="workers" name="workers" class="w-full px-4 py-2.5 border @error('workers') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                  <input type="number" id="workers" name="workers" class="w-full px-4 py-2.5 border @error('workers') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                       placeholder="1" min="1" value="{{ old('workers', 1) }}" required>
                   @error('workers') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
               </div>
@@ -107,7 +107,7 @@
               <!-- Output -->
               <div>
                   <label for="output" class="block text-sm font-semibold text-gray-900 mb-2">Output/Production *</label>
-                  <input type="number" id="output" name="output" class="w-full px-4 py-2.5 border @error('output') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                  <input type="number" id="output" name="output" class="w-full px-4 py-2.5 border @error('output') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                       placeholder="0.00" step="0.01" min="0" value="{{ old('output') }}" required>
                   @error('output') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
               </div>
@@ -127,7 +127,7 @@
           <!-- Comments -->
           <div>
               <label for="comment" class="block text-sm font-semibold text-gray-900 mb-2">Comments <span class="text-gray-500 font-normal">Optional</span></label>
-              <textarea id="comment" name="comment" rows="4" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all resize-none" 
+              <textarea id="comment" name="comment" rows="4" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all resize-none shadow-sm" 
                   placeholder="Add any additional notes about this productivity log...">{{ old('comment') }}</textarea>
               @error('comment') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
           </div>
@@ -135,7 +135,7 @@
 
         <!-- Form Actions -->
         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-400 hover:bg-primary-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>

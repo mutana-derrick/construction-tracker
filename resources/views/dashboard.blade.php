@@ -26,7 +26,7 @@
       </div>
       <a
         href="{{ route('equipment-logs.create', ['project_id' => $project->id]) }}"
-        class="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2.5 bg-primary-400 hover:bg-primary-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2"
+        class="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -38,7 +38,7 @@
     <!-- Key Metrics Grid - Project Specific -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Equipment Logs Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Equipment Logs</p>
@@ -49,15 +49,15 @@
               <p class="text-xs text-gray-500">total</p>
             </div>
           </div>
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-lg">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-50 rounded-lg">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
           </div>
         </div>
         <div class="mt-4 pt-4 border-t border-gray-100">
-          <a href="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-primary-400 hover:text-primary-500 transition-colors flex items-center gap-1">
+          <a href="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors flex items-center gap-1">
             View logs
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -67,7 +67,7 @@
       </div>
 
       <!-- Today's Logs Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Today's Entries</p>
@@ -91,7 +91,7 @@
       </div>
 
       <!-- Equipment Cost Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Equipment Cost</p>
@@ -108,7 +108,7 @@
           </div>
         </div>
         <div class="mt-4 pt-4 border-t border-gray-100">
-          <a href="{{ route('equipment-costs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-primary-400 hover:text-primary-500 transition-colors flex items-center gap-1">
+          <a href="{{ route('equipment-costs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors flex items-center gap-1">
             View records
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -118,7 +118,7 @@
       </div>
 
       <!-- Productivity Average Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Avg Productivity</p>
@@ -131,14 +131,14 @@
               <p class="text-xs text-gray-500">units/day</p>
             </div>
           </div>
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-purple-50 rounded-lg">
-            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-50 rounded-lg">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
             </svg>
           </div>
         </div>
         <div class="mt-4 pt-4 border-t border-gray-100">
-          <a href="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-primary-400 hover:text-primary-500 transition-colors flex items-center gap-1">
+          <a href="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors flex items-center gap-1">
             View details
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -149,14 +149,14 @@
     </div>
 
     <!-- Recent Equipment Logs Table -->
-    <div class="bg-white rounded-xl border border-gray-200 p-6">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
       <div class="mb-8">
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-xl font-bold text-gray-900">Recent Equipment Logs</h2>
             <p class="text-sm text-gray-600 mt-1">Latest log entries for this project</p>
           </div>
-          <a href="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-primary-400 hover:text-primary-500 transition-colors flex items-center gap-1">
+          <a href="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}" class="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors flex items-center gap-1">
             View all logs
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -194,7 +194,7 @@
                   <td class="px-4 py-4 text-right">
                     <a
                       href="{{ route('projects.show', $project) }}"
-                      class="inline-flex items-center gap-1 text-primary-400 hover:text-primary-500 font-medium transition-colors text-sm"
+                      class="inline-flex items-center gap-1 text-yellow-600 hover:text-yellow-700 font-medium transition-colors text-sm"
                     >
                       View
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,7 +214,7 @@
           </svg>
           <p class="text-gray-600 mb-4">No projects created yet</p>
           @can('create', \App\Models\Project::class)
-            <a href="{{ route('projects.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 text-primary-600 hover:bg-primary-100 rounded-lg font-medium transition-colors text-sm">
+            <a href="{{ route('projects.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 rounded-lg font-medium transition-colors text-sm shadow-sm">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
               </svg>
@@ -228,9 +228,9 @@
     <!-- Quick Actions Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Quick Actions Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
           Quick Actions
@@ -264,7 +264,7 @@
       </div>
 
       <!-- Reports Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
           <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -294,7 +294,7 @@
       </div>
 
       <!-- User Role Card -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
         <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
           <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -309,7 +309,7 @@
           <div>
             <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Role</p>
             @if(auth()->user()->role === 'recorder')
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-50 text-primary-700 rounded-lg text-xs font-semibold border border-primary-200">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-semibold border border-yellow-200 shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4"></path>
                 </svg>

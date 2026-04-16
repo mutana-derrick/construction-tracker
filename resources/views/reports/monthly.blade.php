@@ -30,7 +30,7 @@
                                     id="project_id"
                                     name="project_id"
                                     required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm"
                                 >
                                     <option value="">-- Choose a project --</option>
                                     @foreach ($projects as $project)
@@ -48,7 +48,7 @@
                                     name="month"
                                     required
                                     value="{{ old('month', date('m')) }}"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm"
                                 >
                                     @for ($i = 1; $i <= 12; $i++)
                                         <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>
@@ -70,7 +70,7 @@
                                     max="2099"
                                     required
                                     value="{{ old('year', date('Y')) }}"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm"
                                 />
                             </div>
                         </div>

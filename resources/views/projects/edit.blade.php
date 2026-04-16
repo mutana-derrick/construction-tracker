@@ -13,10 +13,10 @@
       </a>
     </div>
 
-    <div class="bg-white rounded-xl border border-gray-200 p-8">
+    <div class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
       <div class="mb-8">
         <div class="flex items-center gap-3 mb-2">
-          <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
           </svg>
           <h1 class="text-3xl font-bold text-gray-900">Edit Project</h1>
@@ -35,7 +35,7 @@
             type="text"
             id="name"
             name="name"
-            class="w-full px-4 py-2.5 border @error('name') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all"
+            class="w-full px-4 py-2.5 border @error('name') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm"
             placeholder="e.g., Highway Expansion Project"
             value="{{ old('name', $project->name) }}"
             required
@@ -57,7 +57,7 @@
             type="text"
             id="location"
             name="location"
-            class="w-full px-4 py-2.5 border @error('location') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all"
+            class="w-full px-4 py-2.5 border @error('location') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm"
             placeholder="e.g., Route 5, Northern Region"
             value="{{ old('location', $project->location) }}"
             required
@@ -79,7 +79,7 @@
             id="description"
             name="description"
             rows="4"
-            class="w-full px-4 py-2.5 border @error('description') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all resize-none"
+            class="w-full px-4 py-2.5 border @error('description') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all resize-none shadow-sm"
             placeholder="Project details, objectives, scope..."
           >{{ old('description', $project->description) }}</textarea>
           @error('description')
@@ -94,7 +94,7 @@
 
         <!-- Form Actions -->
         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-          <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-400 hover:bg-primary-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
+          <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>

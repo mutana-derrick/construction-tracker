@@ -11,7 +11,7 @@
           Back to Equipment Logs
         </a>
         <div class="flex items-center gap-3 mb-2">
-          <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <h1 class="text-3xl font-bold text-gray-900">New Equipment Log</h1>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Form -->
-    <form action="{{ route('equipment-logs.store') }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8">
+    <form action="{{ route('equipment-logs.store') }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
         @csrf
 
         <!-- Hidden Project ID -->
@@ -61,7 +61,7 @@
         <!-- Equipment Section -->
         <div class="space-y-6 mb-8 pb-8 border-b border-gray-200">
           <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             Equipment Details
@@ -71,7 +71,7 @@
             <!-- Equipment Type -->
             <div>
                 <label for="equipment_type" class="block text-sm font-semibold text-gray-900 mb-2">Equipment Type *</label>
-                <input type="text" id="equipment_type" name="equipment_type" class="w-full px-4 py-2.5 border @error('equipment_type') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                <input type="text" id="equipment_type" name="equipment_type" class="w-full px-4 py-2.5 border @error('equipment_type') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                     placeholder="e.g., Excavator, Bulldozer, Compactor" 
                     value="{{ old('equipment_type') }}" required>
                 @error('equipment_type') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -80,7 +80,7 @@
             <!-- Equipment ID -->
             <div>
                 <label for="equipment_id" class="block text-sm font-semibold text-gray-900 mb-2">Equipment ID *</label>
-                <input type="text" id="equipment_id" name="equipment_id" class="w-full px-4 py-2.5 border @error('equipment_id') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                <input type="text" id="equipment_id" name="equipment_id" class="w-full px-4 py-2.5 border @error('equipment_id') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                     placeholder="e.g., EQ-001, CAT-336" 
                     value="{{ old('equipment_id') }}" required>
                 @error('equipment_id') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -90,7 +90,7 @@
           <!-- Activity -->
           <div>
               <label for="activity" class="block text-sm font-semibold text-gray-900 mb-2">Activity / Work Performed *</label>
-              <input type="text" id="activity" name="activity" class="w-full px-4 py-2.5 border @error('activity') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+              <input type="text" id="activity" name="activity" class="w-full px-4 py-2.5 border @error('activity') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                   placeholder="e.g., Site excavation, Foundation preparation" 
                   value="{{ old('activity') }}" required>
               @error('activity') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -108,7 +108,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                   <label for="planned_output" class="block text-sm font-semibold text-gray-900 mb-2">Planned Output *</label>
-                  <input type="number" id="planned_output" name="planned_output" class="w-full px-4 py-2.5 border @error('planned_output') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                  <input type="number" id="planned_output" name="planned_output" class="w-full px-4 py-2.5 border @error('planned_output') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                       placeholder="0.00" step="0.01" min="0"
                       value="{{ old('planned_output') }}" required>
                   @error('planned_output') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -116,7 +116,7 @@
 
               <div>
                   <label for="actual_output" class="block text-sm font-semibold text-gray-900 mb-2">Actual Output *</label>
-                  <input type="number" id="actual_output" name="actual_output" class="w-full px-4 py-2.5 border @error('actual_output') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                  <input type="number" id="actual_output" name="actual_output" class="w-full px-4 py-2.5 border @error('actual_output') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                       placeholder="0.00" step="0.01" min="0"
                       value="{{ old('actual_output') }}" required>
                   @error('actual_output') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -135,7 +135,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                   <label for="working_hours" class="block text-sm font-semibold text-gray-900 mb-2">Working Hours *</label>
-                  <input type="number" id="working_hours" name="working_hours" class="w-full px-4 py-2.5 border @error('working_hours') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                  <input type="number" id="working_hours" name="working_hours" class="w-full px-4 py-2.5 border @error('working_hours') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                       placeholder="0.0" step="0.1" min="0" max="24"
                       value="{{ old('working_hours') }}" required>
                   @error('working_hours') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -143,7 +143,7 @@
 
               <div>
                   <label for="available_hours" class="block text-sm font-semibold text-gray-900 mb-2">Available Hours *</label>
-                  <input type="number" id="available_hours" name="available_hours" class="w-full px-4 py-2.5 border @error('available_hours') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+                  <input type="number" id="available_hours" name="available_hours" class="w-full px-4 py-2.5 border @error('available_hours') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                       placeholder="0.0" step="0.1" min="0" max="24"
                       value="{{ old('available_hours') }}" required>
                   @error('available_hours') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -157,7 +157,7 @@
           <!-- Fuel -->
           <div>
               <label for="fuel_used" class="block text-sm font-semibold text-gray-900 mb-2">Fuel Used (Liters) <span class="text-gray-500 font-normal">Optional</span></label>
-              <input type="number" id="fuel_used" name="fuel_used" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all" 
+              <input type="number" id="fuel_used" name="fuel_used" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                   placeholder="0.0" step="0.01" min="0"
                   value="{{ old('fuel_used') }}">
               @error('fuel_used') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
@@ -166,7 +166,7 @@
           <!-- Comments -->
           <div>
               <label for="comment" class="block text-sm font-semibold text-gray-900 mb-2">Comments <span class="text-gray-500 font-normal">Optional</span></label>
-              <textarea id="comment" name="comment" rows="4" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all resize-none" 
+              <textarea id="comment" name="comment" rows="4" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all resize-none shadow-sm" 
                   placeholder="Add any additional notes about this equipment log...">{{ old('comment') }}</textarea>
               @error('comment') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
           </div>
@@ -174,7 +174,7 @@
 
         <!-- Form Actions -->
         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary-400 hover:bg-primary-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>

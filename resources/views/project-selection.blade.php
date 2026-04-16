@@ -7,20 +7,20 @@
     <title>Select Project - ConstructTrack</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
-  <body class="bg-white">
-  <div class="min-h-screen bg-white py-8 md:py-12 px-4 sm:px-6 lg:px-8">
+  <body class=" bg-gray-100">
+  <div class="min-h-screen bg-gray-100 py-8 md:py-12 px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <div class="max-w-6xl mx-auto mb-8 md:mb-12">
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-400 rounded-xl mb-4 shadow-lg">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-xl mb-4 shadow-lg">
           <span class="text-3xl">⚙️</span>
         </div>
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">ConstructTrack</h1>
         <p class="text-base md:text-lg text-gray-600">Construction Productivity Tracking</p>
       </div>
 
-      <div class="bg-white border border-gray-200 rounded-2xl p-5 md:p-8 shadow-sm mb-8">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div class="bg-white border border-gray-200 rounded-2xl p-5 md:p-8 shadow-sm mb-2">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-2">
           <div class="flex-1 min-w-0">
             <h2 class="text-xl md:text-3xl font-bold text-gray-900 truncate">Welcome, {{ auth()->user()->name }}! 👋</h2>
             <p class="text-gray-600 mt-1 text-sm md:text-base">Select a project to get started or create a new one</p>
@@ -57,9 +57,23 @@
     <div class="max-w-6xl mx-auto">
       @if ($projectCount > 0)
         <div class="mb-8">
-          <h3 class="text-xl md:text-2xl font-semibold text-gray-900 mb-4">
-            Your Projects <span class="text-sm font-normal text-gray-500">({{ $projectCount }})</span>
-          </h3>
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <h3 class="text-xl md:text-2xl font-semibold text-gray-900">
+              Your Projects <span class="text-sm font-normal text-gray-500">({{ $projectCount }})</span>
+            </h3>
+            @can('create', \App\Models\Project::class)
+              <a
+                href="{{ route('projects.create') }}"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 shadow-sm hover:shadow-md whitespace-nowrap shrink-0"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span class="hidden sm:inline">Create New Project</span>
+                <span class="sm:hidden">Create</span>
+              </a>
+            @endcan
+          </div>
 
           {{-- 1 col on xs, 2 col on sm+, 3 col on lg+ --}}
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -67,12 +81,12 @@
               <form action="{{ route('projects.select.post', $project) }}" method="POST" class="group h-full">
                 @csrf
                 <button type="submit" class="w-full text-left h-full">
-                  <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all hover:border-primary-300 h-full flex flex-col">
+                  <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all hover:border-yellow-300 h-full flex flex-col">
 
                     <!-- Project Header -->
                     <div class="flex items-start gap-3 mb-3">
                       <div class="flex-1 min-w-0">
-                        <h4 class="text-base font-semibold text-gray-900 group-hover:text-primary-600 transition-colors leading-snug">
+                        <h4 class="text-base font-semibold text-gray-900 group-hover:text-yellow-600 transition-colors leading-snug">
                           {{ $project->name }}
                         </h4>
                         <p class="text-xs text-gray-500 mt-1 flex items-center gap-1 truncate">
@@ -80,8 +94,8 @@
                           <span class="truncate">{{ $project->location ?? 'No location' }}</span>
                         </p>
                       </div>
-                      <div class="inline-flex items-center justify-center w-9 h-9 bg-primary-50 rounded-lg group-hover:bg-primary-100 transition-colors shrink-0">
-                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div class="inline-flex items-center justify-center w-9 h-9 bg-yellow-50 rounded-lg group-hover:bg-yellow-100 transition-colors shrink-0">
+                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                         </svg>
                       </div>
@@ -135,21 +149,6 @@
           <p class="text-gray-600 mb-6 max-w-md mx-auto">Create your first project to start tracking construction productivity and costs.</p>
         </div>
       @endif
-
-      <!-- Create New Project Button -->
-      <div class="mt-8 text-center">
-        @can('create', \App\Models\Project::class)
-          <a
-            href="{{ route('projects.create') }}"
-            class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-400 hover:bg-primary-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 shadow-sm hover:shadow-md"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            Create New Project
-          </a>
-        @endcan
-      </div>
     </div>
 
   </body>

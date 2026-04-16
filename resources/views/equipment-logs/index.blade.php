@@ -6,7 +6,7 @@
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-3 mb-2">
-          <svg class="w-8 h-8 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <h1 class="text-3xl font-bold text-gray-900">Equipment Logs</h1>
@@ -14,7 +14,7 @@
         <p class="text-gray-600 mt-2">Project: <span class="font-semibold">{{ $project->name }}</span></p>
       </div>
       @can('create', App\Models\EquipmentLog::class)
-      <a href="{{ route('equipment-logs.create', ['project_id' => $project->id]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-400 hover:bg-primary-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 whitespace-nowrap">
+      <a href="{{ route('equipment-logs.create', ['project_id' => $project->id]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 whitespace-nowrap shadow-sm hover:shadow-md">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
@@ -43,7 +43,7 @@
     @endif
 
     <!-- Equipment Logs Table -->
-    <div class="bg-white rounded-xl border border-gray-200">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
         @if($logs->count() > 0)
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -91,7 +91,7 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                <a href="{{ route('equipment-logs.show', $log) }}" class="inline-flex items-center gap-1 text-primary-400 hover:text-primary-500 font-medium transition-colors text-sm">
+                                <a href="{{ route('equipment-logs.show', $log) }}" class="inline-flex items-center gap-1 text-yellow-600 hover:text-yellow-700 font-medium transition-colors text-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -127,7 +127,7 @@
           </svg>
           <p class="text-gray-600 mb-4 font-medium">No equipment logs recorded yet</p>
           @can('create', App\Models\EquipmentLog::class)
-          <a href="{{ route('equipment-logs.create', ['project_id' => $project->id]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary-50 text-primary-600 hover:bg-primary-100 rounded-lg font-medium transition-colors">
+          <a href="{{ route('equipment-logs.create', ['project_id' => $project->id]) }}" class="inline-flex items-center gap-2 px-4 py-2.5  bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-lg font-medium transition-colors shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
