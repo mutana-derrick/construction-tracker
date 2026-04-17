@@ -19,7 +19,12 @@ nixPkgs = [
 ]
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader", "npm ci", "npm run build"]
+# We use 'npm install' here to ensure all UI dependencies are present
+cmds = [
+  "composer install --no-dev --optimize-autoloader", 
+  "npm install", 
+  "npm run build"
+]
 
 [phases.build] 
 cmds = [
@@ -28,5 +33,5 @@ cmds = [
 ]
 
 [start]
-# starting a PHP app in Nixpacks
+# This command handles migrations, the port handshake, and the UI root
 cmd = "php artisan migrate --force && frankenphp php-server --listen :8080 --root public/"
