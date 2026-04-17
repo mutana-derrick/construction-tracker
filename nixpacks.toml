@@ -34,4 +34,4 @@ cmds = [
 
 [start]
 # This command handles migrations, the port handshake, and the UI root
-cmd = "php artisan migrate:fresh --seed --force && frankenphp php-server --listen :8080 --root public/"
+cmd = "php artisan migrate --force && frankenphp php-server --listen :8080 --root public/"
