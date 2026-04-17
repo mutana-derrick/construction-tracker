@@ -29,4 +29,4 @@ cmds = [
 
 [start]
 # starting a PHP app in Nixpacks
-cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php artisan migrate --force && frankenphp php-server --listen :8080 --root public/"
