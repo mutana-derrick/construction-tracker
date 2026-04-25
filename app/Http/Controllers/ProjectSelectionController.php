@@ -28,14 +28,14 @@ class ProjectSelectionController extends Controller
     }
 
     /**
-     * Set the selected project and redirect to dashboard.
+     * Set the selected project and redirect to Project dashboard.
      */
     public function select(Request $request, Project $project)
     {
         // Store selected project in session
         session(['selected_project_id' => $project->id]);
 
-        return redirect()->route('dashboard', ['project_id' => $project->id]);
+        return redirect()->route('projects.show', $project);
     }
 
     /**

@@ -7,12 +7,12 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
-        <a href="{{ route('projects.index') }}" class="inline-flex items-center gap-1 text-gray-600 hover:text-gray-900 font-medium transition-colors mb-3">
+        {{-- <a href="{{ route('projects.index') }}" class="inline-flex items-center gap-1 text-gray-600 hover:text-gray-900 font-medium transition-colors mb-3">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
           Back to Projects
-        </a>
+        </a> --}}
         <div class="flex items-center gap-3 mb-2">
           <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
@@ -27,14 +27,14 @@
           {{ $project->location }}
         </div>
       </div>
-      @can('update', $project)
+      {{-- @can('update', $project)
         <a href="{{ route('projects.edit', $project) }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
           </svg>
           Edit Project
         </a>
-      @endcan
+      @endcan --}}
     </div>
 
     <!-- Project Details -->

@@ -23,8 +23,23 @@
             <div class="flex-1">
               <span class="text-lg font-bold text-gray-900 block">ConstructTrack</span>
               @php
-                $projectId = request()->query('project_id') ?? session('selected_project_id');
-                $currentProject = $projectId ? \App\Models\Project::find($projectId) : null;
+                $selectedProjectId = session('selected_project_id');
+
+                $routeProject = request()->route('project');
+
+                if ($routeProject instanceof \App\Models\Project) {
+                    $selectedProjectId = $routeProject->id;
+                }
+
+                $currentProject = $selectedProjectId
+                    ? \App\Models\Project::find($selectedProjectId)
+                    : null;
+
+                $dashboardUrl = $currentProject
+                    ? route('projects.show', $currentProject)
+                    : route('projects.select');
+
+                $showLogs = $currentProject !== null;
               @endphp
               @if ($currentProject)
                 <span class="text-xs text-gray-600 block truncate">{{ $currentProject->name }}</span>
@@ -36,8 +51,8 @@
         <!-- Navigation -->
         <nav class="flex-1 px-3 py-6 space-y-2 overflow-y-auto">
           <a
-            href="{{ route('dashboard') }}"
-            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('dashboard') ? 'bg-yellow-100 text-yellow-900 border-l-4 border-yellow-400' : 'text-gray-700 hover:bg-gray-50' }}"
+            href="{{ $dashboardUrl }}"
+            class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('projects.show') ? 'bg-yellow-100 text-yellow-900 border-l-4 border-yellow-400' : 'text-gray-700 hover:bg-gray-50' }}"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
@@ -48,11 +63,11 @@
           <!-- Projects Section -->
           <div class="pt-6">
             <h3 class="px-4 py-2 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-              Projects
+              Manage Projects
             </h3>
             <a
               href="{{ route('projects.index') }}"
-              class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('projects.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
+              class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('projects.index', 'projects.create', 'projects.edit') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
@@ -73,7 +88,7 @@
                 Daily Logs
               </h3>
               <a
-                href="{{ route('equipment-logs.index', ['project_id' => $projectId]) }}"
+                href="{{ route('equipment-logs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('equipment-logs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +98,7 @@
                 Equipment
               </a>
               <a
-                href="{{ route('equipment-costs.index', ['project_id' => $projectId]) }}"
+                href="{{ route('equipment-costs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('equipment-costs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +107,7 @@
                 Equipment Cost
               </a>
               <a
-                href="{{ route('productivity-logs.index', ['project_id' => $projectId]) }}"
+                href="{{ route('productivity-logs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('productivity-logs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +116,7 @@
                 Productivity
               </a>
               <a
-                href="{{ route('casual-labour-logs.index', ['project_id' => $projectId]) }}"
+                href="{{ route('casual-labour-logs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('casual-labour-logs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +125,7 @@
                 Labour Cost
               </a>
               <a
-                href="{{ route('material-usage.index', ['project_id' => $projectId]) }}"
+                href="{{ route('material-usage.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('material-usage.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +134,7 @@
                 Material Usage
               </a>
               <a
-                href="{{ route('material-costs.index', ['project_id' => $projectId]) }}"
+                href="{{ route('material-costs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('material-costs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
