@@ -95,7 +95,7 @@
                 <div>
                     <label for="total_cost" class="block text-sm font-semibold text-gray-900 mb-2">Total Cost (Calculated)</label>
                     <div class="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-yellow-100 flex items-center font-bold text-lg text-yellow-700 shadow-sm" id="total_cost_display">
-                        ${{ number_format($cost->total_cost, 2) }}
+                        Rwf {{ number_format($cost->total_cost, 2) }}
                     </div>
                 </div>
             </div>

@@ -12,8 +12,15 @@ class ProjectSelectionController extends Controller
      */
     public function index(Request $request)
     {
-        $projects = Project::orderBy('created_at', 'desc')->get();
-        
+        $projects = Project::query()
+            ->withCount([
+                'equipmentLogs',
+                'equipmentCosts',
+            ])
+            ->withSum('equipmentCosts', 'total_cost')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('project-selection', [
             'projects' => $projects,
             'projectCount' => $projects->count(),

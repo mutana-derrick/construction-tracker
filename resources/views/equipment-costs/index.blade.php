@@ -50,7 +50,7 @@
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Costs</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-4">${{ number_format($costs->sum('total_cost'), 2) }}</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-4">Rwf {{ number_format($costs->sum('total_cost'), 2) }}</p>
                 </div>
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
                     <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +65,7 @@
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Avg Cost per Unit</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-4">${{ number_format($costs->count() > 0 ? $costs->average('cost_per_unit') : 0, 2) }}</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-4">Rwf {{ number_format($costs->count() > 0 ? $costs->average('cost_per_unit') : 0, 2) }}</p>
                 </div>
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
                     <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                   <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V6.75m-9-5v3.5m5-3.5v3.5m-8.5 0h10"></path>
                                 </svg>
-                                ${{ number_format($cost->cost_per_unit, 2) }}
+                                Rwf {{ number_format($cost->cost_per_unit, 2) }}
                             </span>
                         </td>
                         <td class="px-6 py-4">
@@ -114,7 +114,7 @@
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                   <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V6.75m-9-5v3.5m5-3.5v3.5m-8.5 0h10"></path>
                                 </svg>
-                                ${{ number_format($cost->total_cost, 2) }}
+                                Rwf {{ number_format($cost->total_cost, 2) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 text-gray-600">

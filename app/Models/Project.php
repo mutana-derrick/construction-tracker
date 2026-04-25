@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Project extends Model
 {
-    protected $fillable = ['name', 'location', 'description', 'created_by'];
+    protected $fillable = ['name', 'location', 'description','budget','start_date','expected_end_date','created_by'];
 
     protected $casts = [
+        'budget' => 'decimal:2',
+        'start_date' => 'date',
+        'expected_end_date' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

@@ -85,12 +85,12 @@
 
             <div class="bg-yellow-50 rounded-lg p-6 border border-yellow-200 shadow-sm">
                 <p class="text-sm font-medium text-gray-600">Wage per Worker</p>
-                <p class="text-3xl font-bold text-yellow-700 mt-2">${{ number_format($log->wage, 2) }}</p>
+                <p class="text-3xl font-bold text-yellow-700 mt-2">Rwf {{ number_format($log->wage, 2) }}</p>
             </div>
 
             <div class="bg-yellow-100 rounded-lg p-6 border border-yellow-300 shadow-sm">
                 <p class="text-sm font-medium text-gray-600">Total Cost</p>
-                <p class="text-3xl font-bold text-yellow-700 mt-2">${{ number_format($log->total_cost, 2) }}</p>
+                <p class="text-3xl font-bold text-yellow-700 mt-2">Rwf {{ number_format($log->total_cost, 2) }}</p>
             </div>
         </div>
 
@@ -100,9 +100,9 @@
             <div class="flex items-center justify-center gap-4 text-lg">
                 <span class="text-gray-900">{{ $log->number_of_workers }} workers</span>
                 <span class="text-2xl text-gray-400">×</span>
-                <span class="text-yellow-600 font-semibold">${{ number_format($log->wage, 2) }}/worker</span>
+                <span class="text-yellow-600 font-semibold">Rwf {{ number_format($log->wage, 2) }}/worker</span>
                 <span class="text-2xl text-gray-400">=</span>
-                <span class="text-yellow-700 font-bold text-2xl">${{ number_format($log->total_cost, 2) }}</span>
+                <span class="text-yellow-700 font-bold text-2xl">Rwf {{ number_format($log->total_cost, 2) }}</span>
             </div>
         </div>
     </div>

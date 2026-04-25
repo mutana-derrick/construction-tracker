@@ -111,16 +111,16 @@
                     <!-- Project Stats — flex row so labels never overlap -->
                     <div class="flex items-stretch divide-x divide-gray-100 border-t border-gray-100 pt-4 mb-4">
                       <div class="flex-1 flex flex-col items-center px-2 first:pl-0 last:pr-0">
-                        <p class="text-lg font-bold text-gray-900 leading-none">{{ $project->equipmentLogs->count() }}</p>
+                        <p class="text-lg font-bold text-gray-900 leading-none">{{ $project->equipment_logs_count }}</p>
                         <p class="text-xs text-gray-500 mt-1 text-center leading-tight">Equipment</p>
                       </div>
                       <div class="flex-1 flex flex-col items-center px-2">
-                        <p class="text-lg font-bold text-gray-900 leading-none">{{ $project->equipmentCosts->count() }}</p>
+                        <p class="text-lg font-bold text-gray-900 leading-none">{{ $project->equipment_costs_count }}</p>
                         <p class="text-xs text-gray-500 mt-1 text-center leading-tight">Cost Records</p>
                       </div>
                       <div class="flex-1 flex flex-col items-center px-2 first:pl-0 last:pr-0">
                         <p class="text-lg font-bold text-gray-900 leading-none">
-                          ${{ number_format($project->equipmentCosts->sum('total_cost'), 0) }}
+                          Rwf {{ number_format($project->equipment_costs_sum_total_cost ?? 0, 0) }}
                         </p>
                         <p class="text-xs text-gray-500 mt-1 text-center leading-tight">Total</p>
                       </div>

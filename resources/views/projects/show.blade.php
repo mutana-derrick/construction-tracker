@@ -92,7 +92,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Equipment Cost</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">${{ number_format($project->equipmentCosts->sum('total_cost'), 0) }}</p>
+            <p class="text-3xl font-bold text-gray-900 mt-3">Rwf {{ number_format($project->equipmentCosts->sum('total_cost'), 0) }}</p>
           </div>
           <div class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center border border-yellow-200 shadow-sm">
             <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +105,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Labour Cost</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">${{ number_format($project->casualLabourLogs->sum('total_cost'), 0) }}</p>
+            <p class="text-3xl font-bold text-gray-900 mt-3">Rwf {{ number_format($project->casualLabourLogs->sum('total_cost'), 0) }}</p>
           </div>
           <div class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center border border-yellow-200 shadow-sm">
             <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,7 +298,7 @@
                     <td class="px-4 py-3 text-gray-600">{{ $log->activity }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ $log->labour_classification }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ $log->number_of_workers }}</td>
-                    <td class="px-4 py-3 text-gray-900 font-semibold">${{ number_format($log->total_cost, 2) }}</td>
+                    <td class="px-4 py-3 text-gray-900 font-semibold">Rwf {{ number_format($log->total_cost, 2) }}</td>
                   </tr>
                 @endforeach
               </tbody>
@@ -344,7 +344,7 @@
                     <td class="px-4 py-3 text-gray-600">{{ $usage->activity }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ $usage->planned_qty }}</td>
                     <td class="px-4 py-3 text-gray-600">{{ $usage->used_qty }}</td>
-                    <td class="px-4 py-3 text-gray-900 font-semibold">${{ number_format($cost->total ?? 0, 2) }}</td>
+                    <td class="px-4 py-3 text-gray-900 font-semibold">Rwf {{ number_format($cost->total ?? 0, 2) }}</td>
                   </tr>
                 @empty
                   <tr>

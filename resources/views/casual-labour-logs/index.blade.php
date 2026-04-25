@@ -88,7 +88,7 @@
                         @php
                             $totalCost = $logs->sum('total_cost');
                         @endphp
-                        ${{ number_format($totalCost, 2) }}
+                        Rwf {{ number_format($totalCost, 2) }}
                     </p>
                 </div>
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
@@ -108,7 +108,7 @@
                         @php
                             $avgWage = $logs->count() > 0 ? round($logs->sum('wage') / $logs->count(), 2) : 0;
                         @endphp
-                        ${{ number_format($avgWage, 2) }}
+                        Rwf {{ number_format($avgWage, 2) }}
                     </p>
                 </div>
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
@@ -155,13 +155,13 @@
                                 {{ $log->number_of_workers }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-gray-900 font-medium">${{ number_format($log->wage, 2) }}</td>
+                        <td class="px-6 py-4 text-gray-900 font-medium">Rwf {{ number_format($log->wage, 2) }}</td>
                         <td class="px-6 py-4">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-md text-xs font-bold border border-yellow-200">
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                   <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V6.75m-9-5v3.5m5-3.5v3.5m-8.5 0h10"></path>
                                 </svg>
-                                ${{ number_format($log->total_cost, 2) }}
+                                Rwf {{ number_format($log->total_cost, 2) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 text-gray-600">

@@ -7,7 +7,7 @@
     <!-- Welcome Header with Project Info -->
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ $project->name }} �</h1>
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ $project->name }}</h1>
         <p class="text-gray-600 text-sm flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -97,7 +97,7 @@
             <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Equipment Cost</p>
             <div class="mt-4 flex items-baseline gap-2">
               <p class="text-3xl font-bold text-gray-900">
-                ${{ number_format($project->equipmentCosts->sum('total_cost'), 0) }}
+                Rwf {{ number_format($project->equipment_costs_sum_total_cost ?? 0, 0) }}
               </p>
             </div>
           </div>

@@ -28,13 +28,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/clear-selection', [ProjectSelectionController::class, 'clearSelection'])->name('projects.clear-selection');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('projects', ProjectController::class);
-    Route::resource('equipment-logs', EquipmentLogController::class);
-    Route::resource('equipment-costs', EquipmentCostController::class);
-    Route::resource('productivity-logs', ProductivityLogController::class);
-    Route::resource('casual-labour-logs', CasualLabourLogController::class);
-    Route::resource('material-usage', MaterialUsageController::class);
-    Route::resource('material-costs', MaterialCostController::class);
+    Route::resource('projects', ProjectController::class)->except(['destroy']);
+    Route::resource('equipment-logs', EquipmentLogController::class)->except(['destroy']);
+    Route::resource('equipment-costs', EquipmentCostController::class)->except(['destroy']);
+    Route::resource('productivity-logs', ProductivityLogController::class)->except(['destroy']);
+    Route::resource('casual-labour-logs', CasualLabourLogController::class)->except(['destroy']);
+    Route::resource('material-usage', MaterialUsageController::class)->except(['destroy']);
+    Route::resource('material-costs', MaterialCostController::class)->except(['destroy']);
 
     // Report routes - Views
     Route::get('/reports/daily', [ReportController::class, 'daily'])->name('reports.daily');

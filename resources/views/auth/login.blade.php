@@ -118,15 +118,6 @@
         <p class="text-xs text-gray-600"><span class="font-semibold">Email:</span> recorder@example.com</p>
         <p class="text-xs text-gray-600"><span class="font-semibold">Password:</span> password</p>
       </div>
-
-      <div class="text-center">
-        <p class="text-sm text-gray-600">
-          Don't have an account?
-          <a href="{{ route('register') }}" class="font-semibold text-yellow-600 hover:text-yellow-700 transition-colors">
-            Create one
-          </a>
-        </p>
-      </div>
     </div>
 
     <!-- Footer -->

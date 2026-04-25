@@ -111,7 +111,7 @@
                         Wage per Worker *
                     </label>
                     <div class="relative">
-                        <span class="absolute left-3 top-2 text-gray-600">$</span>
+                        <span class="absolute left-3 top-2 text-gray-600">Rwf&nbsp;</span>
                         <input 
                             type="number" 
                             id="wage" 
@@ -119,7 +119,7 @@
                             value="{{ old('wage') }}"
                             step="0.01"
                             min="0"
-                            placeholder="0.00"
+                            placeholder=" 0.00"
                             class="w-full pl-7 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent shadow-sm {{ $errors->has('wage') ? 'border-red-500' : '' }}"
                             required
                         >
@@ -135,7 +135,7 @@
                         Total Cost
                     </label>
                     <div class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow-sm">
-                        $<span id="totalCost">0.00</span>
+                        Rwf<span id="totalCost">0.00</span>
                     </div>
                 </div>
             </div>

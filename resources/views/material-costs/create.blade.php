@@ -91,7 +91,7 @@
                         Cost per Item *
                     </label>
                     <div class="relative">
-                        <span class="absolute left-3 top-2 text-gray-600">$</span>
+                        <span class="absolute left-3 top-2 text-gray-600">Rwf</span>
                         <input 
                             type="number" 
                             id="cost_per_item" 
@@ -115,7 +115,7 @@
                         Total Cost
                     </label>
                     <div class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-yellow-100 text-yellow-700 font-semibold shadow-sm">
-                        $<span id="totalCost">0.00</span>
+                        Rwf<span id="totalCost"> &nbsp;0.00</span>
                     </div>
                 </div>
             </div>

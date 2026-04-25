@@ -71,7 +71,7 @@
                         @php
                             $totalCost = $logs->sum('total');
                         @endphp
-                        ${{ number_format($totalCost, 2) }}
+                        Rwf {{ number_format($totalCost, 2) }}
                     </p>
                 </div>
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg shrink-0 group-hover:bg-yellow-200 transition-colors">
@@ -111,7 +111,7 @@
                         @php
                             $avgCostPerItem = $logs->count() > 0 ? round($logs->sum('cost_per_item') / $logs->count(), 2) : 0;
                         @endphp
-                        ${{ number_format($avgCostPerItem, 2) }}
+                        Rwf {{ number_format($avgCostPerItem, 2) }}
                     </p>
                 </div>
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg shrink-0 group-hover:bg-yellow-200 transition-colors">
@@ -155,12 +155,12 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
-                                ${{ number_format($log->cost_per_item, 2) }}
+                                Rwf {{ number_format($log->cost_per_item, 2) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
-                                ${{ number_format($log->total, 2) }}
+                                Rwf {{ number_format($log->total, 2) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">

@@ -125,7 +125,7 @@
             <div>
                 <label for="total_cost" class="block text-sm font-semibold text-gray-900 mb-2">Total Cost (Auto-calculated)</label>
                 <div class="w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gradient-to-r from-yellow-50 to-amber-50 flex items-center font-bold text-lg text-yellow-600 shadow-sm" id="total_cost_display">
-                    $0.00
+                    Rwf0.00
                 </div>
             </div>
           </div>
