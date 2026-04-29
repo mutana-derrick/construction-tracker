@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\EquipmentCost;
-use Illuminate\Auth\Access\Response;
+
 
 class EquipmentCostPolicy
 {
@@ -40,25 +40,17 @@ class EquipmentCostPolicy
      * 
      * ⏱️ CRITICAL BUSINESS RULE: Only allow editing within 5 minutes of creation
      */
-    public function update(User $user, EquipmentCost $equipmentCost): Response
+    public function update(User $user, EquipmentCost $equipmentCost): bool
     {
-        // Only the creator can edit
-        if ($user->id !== $equipmentCost->user_id) {
-            return Response::deny('You can only edit your own equipment cost records.');
-        }
-
-        // Only recorders can edit
         if ($user->role !== 'recorder') {
-            return Response::deny('Only recorders can edit equipment cost records.');
+            return false;
         }
 
-        // 5-minute edit window enforcement
-        $minutesElapsed = now()->diffInMinutes($equipmentCost->created_at);
-        if ($minutesElapsed > 5) {
-            return Response::deny("Equipment cost records can only be edited within 5 minutes of creation. {$minutesElapsed} minutes have elapsed.");
+        if ($user->id !== $equipmentCost->user_id) {
+            return false;
         }
 
-        return Response::allow();
+        return $equipmentCost->created_at->copy()->addMinutes(5)->isFuture();
     }
 
     /**
@@ -66,9 +58,9 @@ class EquipmentCostPolicy
      * 
      * ❌ AUDIT RULE: No deletion allowed - maintain complete audit trail
      */
-    public function delete(User $user, EquipmentCost $equipmentCost): Response
+    public function delete(User $user, EquipmentCost $equipmentCost): bool
     {
-        return Response::deny('Equipment cost records cannot be deleted to maintain audit compliance.');
+        return false;
     }
 
     /**

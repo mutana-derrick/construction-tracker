@@ -48,35 +48,25 @@
 
         <!-- Edit Time Limit Warning -->
         @php
-            $createdAt = \Carbon\Carbon::parse($log->created_at);
-            $canEdit = now()->diffInMinutes($createdAt) < 5;
+          $editDeadline = $log->created_at->copy()->addMinutes(5);
+          $isEditable = $editDeadline->isFuture();
+          $minutesLeft = max(0, now()->diffInMinutes($editDeadline, false));
         @endphp
-        
-        @if (!$canEdit)
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <div class="flex gap-3">
-              <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 5v-2"></path>
-              </svg>
-              <div>
-                <p class="font-semibold text-red-800">Edit Time Limit Exceeded</p>
-                <p class="text-sm text-red-700 mt-1">This log was created on {{ $createdAt->format('M d, Y h:i A') }}. Edits are only allowed within 5 minutes of creation.</p>
-              </div>
-            </div>
+
+        <div class="mb-8 p-4 rounded-lg border 
+            {{ $isEditable ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200' }}">
+
+            <p class="text-sm font-semibold 
+                {{ $isEditable ? 'text-green-700' : 'text-red-700' }}">
+                
+                {{ $isEditable ? '⏱️ Edit Window Active' : '⛔ Edit Window Expired' }}
+            </p>
+
+            <p class="text-sm mt-1 text-gray-600">
+                Created at {{ $log->created_at->format('g:i A') }} • 
+                {{ $isEditable ? $minutesLeft . ' minutes remaining' : 'Editing time expired' }}
+            </p>
         </div>
-        @else
-        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-            <div class="flex gap-3">
-              <svg class="w-5 h-5 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <div>
-                <p class="font-semibold text-amber-800">Edit Window Active</p>
-                <p class="text-sm text-amber-700 mt-1">This log can be edited until {{ $createdAt->addMinutes(5)->format('h:i A') }} ({{ now()->diffInMinutes($createdAt->addMinutes(5)) }} minutes remaining)</p>
-              </div>
-            </div>
-        </div>
-        @endif
 
         <!-- Equipment Section -->
         <div class="space-y-6 mb-8 pb-8 border-b border-gray-200">

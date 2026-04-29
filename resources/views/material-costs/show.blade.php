@@ -17,28 +17,25 @@
 
     <!-- 5-Minute Edit Status -->
     @php
-        $minutesElapsed = now()->diffInMinutes($log->created_at);
-        $canStillEdit = $minutesElapsed <= 5;
+        $editDeadline = $log->created_at->copy()->addMinutes(5);
+        $isEditable = $editDeadline->isFuture();
+        $minutesLeft = max(0, now()->diffInMinutes($editDeadline, false));
     @endphp
 
-    <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6 shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex items-center justify-between">
-            <div>
-                <h3 class="font-semibold text-gray-900">⏱️ Edit Window Status</h3>
-                <p class="text-sm text-gray-600 mt-1">Created at {{ $log->created_at->format('g:i A') }} • {{ $minutesElapsed }} minutes ago</p>
-            </div>
-            <div class="text-right">
-                @if($canStillEdit)
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                    ✓ Still Editable ({{ 5 - $minutesElapsed }} min left)
-                </span>
-                @else
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                    🔒 No Longer Editable
-                </span>
-                @endif
-            </div>
-        </div>
+    <div class="mb-6 p-4 rounded-lg border 
+        {{ $isEditable ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200' }}">
+
+        <p class="text-sm font-semibold 
+            {{ $isEditable ? 'text-green-700' : 'text-red-700' }}">
+            
+            {{ $isEditable ? '⏱️ Edit Window Status: Active' : '⛔ Edit Window Expired' }}
+        </p>
+
+        <p class="text-sm mt-1 text-gray-600">
+            Created at {{ $log->created_at->format('g:i A') }} • 
+            {{ $isEditable ? $minutesLeft . ' minutes remaining' : 'No longer editable' }}
+        </p>
+
     </div>
 
     <!-- Material Information Card -->

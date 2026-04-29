@@ -112,7 +112,7 @@
 
             <!-- Cost per Unit -->
             <div>
-                <label for="cost_per_unit" class="block text-sm font-semibold text-gray-900 mb-2">Cost per Unit ($) *</label>
+                <label for="cost_per_unit" class="block text-sm font-semibold text-gray-900 mb-2">Cost per Unit (Rwf) *</label>
                 <input type="number" id="cost_per_unit" name="cost_per_unit" class="w-full px-4 py-2.5 border @error('cost_per_unit') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
                     placeholder="0.00" step="0.01" min="0"
                     value="{{ old('cost_per_unit') }}" required
@@ -183,7 +183,7 @@
             const units = parseFloat(unitsInput.value) || 0;
             const cost = parseFloat(costPerUnitInput.value) || 0;
             const total = units * cost;
-            totalDisplay.textContent = '$' + total.toFixed(2);
+            totalDisplay.textContent = 'Rwf' + total.toFixed(2);
         }
 
         unitsInput.addEventListener('input', updateTotal);

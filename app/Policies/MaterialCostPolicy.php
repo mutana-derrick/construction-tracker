@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\MaterialCost;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+
 
 class MaterialCostPolicy
 {
@@ -41,23 +41,15 @@ class MaterialCostPolicy
      */
     public function update(User $user, MaterialCost $log): bool
     {
-        // Must be Recorder role
         if ($user->role !== 'recorder') {
-            return Response::deny('Only users with Recorder role can edit material cost logs.');
+            return false;
         }
 
-        // Must be the user who created it
         if ($user->id !== $log->user_id) {
-            return Response::deny('You can only edit your own material cost logs.');
+            return false;
         }
 
-        // Check 5-minute window
-        $minutesElapsed = now()->diffInMinutes($log->created_at);
-        if ($minutesElapsed > 5) {
-            return Response::deny("Material cost log records can only be edited within 5 minutes of creation. ({$minutesElapsed} minutes have passed)");
-        }
-
-        return Response::allow();
+        return $log->created_at->copy()->addMinutes(5)->isFuture();
     }
 
     /**
@@ -67,7 +59,7 @@ class MaterialCostPolicy
      */
     public function delete(User $user, MaterialCost $log): bool
     {
-        return Response::deny('Material cost log records cannot be deleted to maintain audit compliance.');
+        return false;
     }
 
     /**

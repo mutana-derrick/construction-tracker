@@ -10,8 +10,9 @@
 
     <!-- Countdown Timer -->
     @php
-        $minutesElapsed = now()->diffInMinutes($log->created_at);
-        $minutesRemaining = max(0, 5 - $minutesElapsed);
+        $editDeadline = $log->created_at->copy()->addMinutes(5);
+        $isEditable = $editDeadline->isFuture();
+        $minutesLeft = max(0, now()->diffInMinutes($editDeadline, false));
     @endphp
     
     <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6">

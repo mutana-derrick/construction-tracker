@@ -3,6 +3,8 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectSelectionController;
+use App\Http\Controllers\EquipmentManagementController;
+use App\Http\Controllers\MaterialManagementController;
 use App\Http\Controllers\EquipmentLogController;
 use App\Http\Controllers\EquipmentCostController;
 use App\Http\Controllers\ProductivityLogController;
@@ -29,6 +31,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('projects', ProjectController::class)->except(['destroy']);
+    Route::get('/equipment', [EquipmentManagementController::class, 'index'])->name('equipment.management');
+    Route::get('/material', [MaterialManagementController::class, 'index']) ->name('material.management');
     Route::resource('equipment-logs', EquipmentLogController::class)->except(['destroy']);
     Route::resource('equipment-costs', EquipmentCostController::class)->except(['destroy']);
     Route::resource('productivity-logs', ProductivityLogController::class)->except(['destroy']);

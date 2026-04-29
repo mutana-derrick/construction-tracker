@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\MaterialUsage;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+
 
 class MaterialUsagePolicy
 {
@@ -41,24 +41,17 @@ class MaterialUsagePolicy
      */
     public function update(User $user, MaterialUsage $log): bool
     {
-        // Must be Recorder role
         if ($user->role !== 'recorder') {
-            return Response::deny('Only users with Recorder role can edit material usage logs.');
+            return false;
         }
 
-        // Must be the user who created it
         if ($user->id !== $log->user_id) {
-            return Response::deny('You can only edit your own material usage logs.');
+            return false;
         }
 
-        // Check 5-minute window
-        $minutesElapsed = now()->diffInMinutes($log->created_at);
-        if ($minutesElapsed > 5) {
-            return Response::deny("Material usage log records can only be edited within 5 minutes of creation. ({$minutesElapsed} minutes have passed)");
-        }
-
-        return Response::allow();
+        return $log->created_at->copy()->addMinutes(5)->isFuture();
     }
+
 
     /**
      * Determine whether the user can delete the material usage log.
@@ -67,7 +60,7 @@ class MaterialUsagePolicy
      */
     public function delete(User $user, MaterialUsage $log): bool
     {
-        return Response::deny('Material usage log records cannot be deleted to maintain audit compliance.');
+        return false;
     }
 
     /**

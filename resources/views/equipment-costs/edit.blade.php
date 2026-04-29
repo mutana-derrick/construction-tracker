@@ -10,8 +10,9 @@
 
     <!-- 5-Minute Edit Window Warning -->
     @php
-        $minutesElapsed = now()->diffInMinutes($cost->created_at);
-        $minutesRemaining = 5 - $minutesElapsed;
+        $editDeadline = $log->created_at->copy()->addMinutes(5);
+        $isEditable = $editDeadline->isFuture();
+        $minutesLeft = max(0, now()->diffInMinutes($editDeadline, false));
     @endphp
     
     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 shadow-sm">
