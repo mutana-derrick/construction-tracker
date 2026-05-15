@@ -3,531 +3,305 @@
 namespace App\Services;
 
 use App\Models\Project;
+use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Collection;
 
 class ExcelExportService
 {
-    /**
-     * Export daily reports to Excel
-     */
     public function exportDailyReport(Project $project, string $date): string
     {
+        $activities = $this->getDailyActivityCosts($project, $date);
+
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getProperties()
-            ->setCreator('Construction Tracker')
-            ->setTitle("Daily Report - {$project->name}")
-            ->setSubject("Daily Report for {$date}");
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Daily Report');
 
-        // Equipment Logs Sheet
-        $this->addEquipmentLogsSheet($spreadsheet, $project, $date);
+        $this->buildHeader($sheet, $project, 'Daily Site Report', Carbon::parse($date)->format('F d, Y'));
+        $this->buildDailyTable($sheet, $activities, 9);
+        $this->styleSheet($sheet);
 
-        // Equipment Costs Sheet
-        $this->addEquipmentCostsSheet($spreadsheet, $project, $date);
-
-        // Productivity Logs Sheet
-        $this->addProductivityLogsSheet($spreadsheet, $project, $date);
-
-        // Labour Logs Sheet
-        $this->addLabourLogsSheet($spreadsheet, $project, $date);
-
-        // Material Usage Sheet
-        $this->addMaterialUsageSheet($spreadsheet, $project, $date);
-
-        // Material Costs Sheet
-        $this->addMaterialCostsSheet($spreadsheet, $project, $date);
-
-        // Summary Sheet
-        $this->addSummarySheet($spreadsheet, $project, $date);
-
-        // Save to temporary file
-        $filename = "daily_report_{$project->id}_{$date}_" . time() . '.xlsx';
-        $filepath = storage_path("app/exports/{$filename}");
-
-        // Create directory if it doesn't exist
-        if (!is_dir(dirname($filepath))) {
-            mkdir(dirname($filepath), 0755, true);
-        }
-
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $writer->save($filepath);
-
-        return $filepath;
+        return $this->saveSpreadsheet($spreadsheet, "daily_report_{$project->id}_{$date}_" . time() . '.xlsx');
     }
 
-    /**
-     * Export monthly reports to Excel
-     */
     public function exportMonthlyReport(Project $project, int $month, int $year): string
     {
+        $dailyRows = $this->getMonthlyDailyCosts($project, $month, $year);
+        $monthName = date('F', mktime(0, 0, 0, $month, 1));
+
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getProperties()
-            ->setCreator('Construction Tracker')
-            ->setTitle("Monthly Report - {$project->name}")
-            ->setSubject("Monthly Report for {$month}/{$year}");
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Monthly Report');
 
-        // Equipment Summary
-        $this->addMonthlyEquipmentSummary($spreadsheet, $project, $month, $year);
+        $this->buildHeader($sheet, $project, 'Monthly Cost Report', "{$monthName} {$year}");
+        $this->buildMonthlyTable($sheet, $dailyRows, 9);
+        $this->styleSheet($sheet);
 
-        // Labour Summary
-        $this->addMonthlyLabourSummary($spreadsheet, $project, $month, $year);
+        return $this->saveSpreadsheet($spreadsheet, "monthly_report_{$project->id}_{$month}_{$year}_" . time() . '.xlsx');
+    }
 
-        // Material Summary
-        $this->addMonthlyMaterialSummary($spreadsheet, $project, $month, $year);
+    private function buildHeader(Worksheet $sheet, Project $project, string $reportType, string $period): void
+    {
+        $sheet->mergeCells('A1:E1');
+        $sheet->setCellValue('A1', 'Construction Productivity Tracking System');
 
-        // Monthly Statistics
-        $this->addMonthlyStatistics($spreadsheet, $project, $month, $year);
+        $sheet->mergeCells('A2:E2');
+        $sheet->setCellValue('A2', $reportType);
 
-        // Save to temporary file
-        $filename = "monthly_report_{$project->id}_{$month}_{$year}_" . time() . '.xlsx';
+        $sheet->setCellValue('A4', 'Project');
+        $sheet->setCellValue('B4', $project->name);
+
+        $sheet->setCellValue('A5', 'Location');
+        $sheet->setCellValue('B5', $project->location ?? 'N/A');
+
+        $sheet->setCellValue('D4', 'Report Period');
+        $sheet->setCellValue('E4', $period);
+
+        $sheet->setCellValue('D5', 'Generated At');
+        $sheet->setCellValue('E5', now()->format('F d, Y g:i A'));
+
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(18);
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle('A4:A5')->getFont()->setBold(true);
+        $sheet->getStyle('D4:D5')->getFont()->setBold(true);
+
+        $sheet->getStyle('A1:E2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A4:E5')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A4:A5')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
+        $sheet->getStyle('D4:D5')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('F8FAFC');
+    }
+
+    private function buildDailyTable(Worksheet $sheet, Collection $activities, int $startRow): void
+    {
+        $headers = ['Activity', 'Equipment Cost', 'Labour Cost', 'Material Cost', 'Total Cost'];
+        $sheet->fromArray($headers, null, "A{$startRow}");
+
+        $row = $startRow + 1;
+
+        foreach ($activities as $activity) {
+            $sheet->setCellValue("A{$row}", $activity['activity']);
+            $sheet->setCellValue("B{$row}", $activity['equipment_cost']);
+            $sheet->setCellValue("C{$row}", $activity['labour_cost']);
+            $sheet->setCellValue("D{$row}", $activity['material_cost']);
+            $sheet->setCellValue("E{$row}", $activity['total_cost']);
+            $row++;
+        }
+
+        $this->addTotalsRow($sheet, $row, [
+            $activities->sum('equipment_cost'),
+            $activities->sum('labour_cost'),
+            $activities->sum('material_cost'),
+            $activities->sum('total_cost'),
+        ]);
+
+        $this->styleReportTable($sheet, $startRow, $row);
+    }
+
+    private function buildMonthlyTable(Worksheet $sheet, Collection $dailyRows, int $startRow): void
+    {
+        $headers = ['Date', 'Equipment Cost', 'Labour Cost', 'Material Cost', 'Total Cost'];
+        $sheet->fromArray($headers, null, "A{$startRow}");
+
+        $row = $startRow + 1;
+
+        foreach ($dailyRows as $dailyRow) {
+            $sheet->setCellValue("A{$row}", Carbon::parse($dailyRow['date'])->format('M d, Y'));
+            $sheet->setCellValue("B{$row}", $dailyRow['equipment_cost']);
+            $sheet->setCellValue("C{$row}", $dailyRow['labour_cost']);
+            $sheet->setCellValue("D{$row}", $dailyRow['material_cost']);
+            $sheet->setCellValue("E{$row}", $dailyRow['total_cost']);
+            $row++;
+        }
+
+        $this->addTotalsRow($sheet, $row, [
+            $dailyRows->sum('equipment_cost'),
+            $dailyRows->sum('labour_cost'),
+            $dailyRows->sum('material_cost'),
+            $dailyRows->sum('total_cost'),
+        ]);
+
+        $this->styleReportTable($sheet, $startRow, $row);
+    }
+
+    private function addTotalsRow(Worksheet $sheet, int $row, array $totals): void
+    {
+        $sheet->setCellValue("A{$row}", 'TOTAL');
+        $sheet->setCellValue("B{$row}", $totals[0]);
+        $sheet->setCellValue("C{$row}", $totals[1]);
+        $sheet->setCellValue("D{$row}", $totals[2]);
+        $sheet->setCellValue("E{$row}", $totals[3]);
+
+        $sheet->getStyle("A{$row}:E{$row}")->getFont()->setBold(true);
+        $sheet->getStyle("A{$row}:E{$row}")
+            ->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('FFEA9D');
+    }
+
+    private function styleReportTable(Worksheet $sheet, int $headerRow, int $lastRow): void
+    {
+        $sheet->getStyle("A{$headerRow}:E{$headerRow}")->getFont()->setBold(true);
+        $sheet->getStyle("A{$headerRow}:E{$headerRow}")
+            ->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('E1AD01');
+
+        $sheet->getStyle("A{$headerRow}:E{$lastRow}")
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(Border::BORDER_THIN);
+
+        $sheet->getStyle("B" . ($headerRow + 1) . ":E{$lastRow}")
+            ->getNumberFormat()
+            ->setFormatCode('"Rwf "#,##0');
+
+        $sheet->getStyle("B{$headerRow}:E{$lastRow}")
+            ->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+    }
+
+    private function styleSheet(Worksheet $sheet): void
+    {
+        foreach (range('A', 'E') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $sheet->freezePane('A10');
+
+        $sheet->getPageSetup()
+            ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE)
+            ->setFitToWidth(1)
+            ->setFitToHeight(0);
+    }
+
+    private function getDailyActivityCosts(Project $project, string $date): Collection
+    {
+        $activities = [];
+
+        foreach ($project->equipmentCosts()->whereDate('date', $date)->get() as $item) {
+            $activity = $item->activity;
+
+            if (!isset($activities[$activity])) {
+                $activities[$activity] = $this->emptyActivityRow($activity);
+            }
+
+            $activities[$activity]['equipment_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->casualLabourLogs()->whereDate('date', $date)->get() as $item) {
+            $activity = $item->activity;
+
+            if (!isset($activities[$activity])) {
+                $activities[$activity] = $this->emptyActivityRow($activity);
+            }
+
+            $activities[$activity]['labour_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->materialCosts()->whereDate('date', $date)->get() as $item) {
+            $activity = $item->activity ?? 'Material Cost';
+
+            if (!isset($activities[$activity])) {
+                $activities[$activity] = $this->emptyActivityRow($activity);
+            }
+
+            $activities[$activity]['material_cost'] += (float) $item->total;
+        }
+
+        foreach ($activities as &$activity) {
+            $activity['total_cost'] =
+                $activity['equipment_cost'] +
+                $activity['labour_cost'] +
+                $activity['material_cost'];
+        }
+
+        return collect($activities)->sortBy('activity')->values();
+    }
+
+    private function getMonthlyDailyCosts(Project $project, int $month, int $year): Collection
+    {
+        $days = [];
+
+        foreach ($project->equipmentCosts()->whereYear('date', $year)->whereMonth('date', $month)->get() as $item) {
+            $date = Carbon::parse($item->date)->format('Y-m-d');
+
+            if (!isset($days[$date])) {
+                $days[$date] = $this->emptyDayRow($date);
+            }
+
+            $days[$date]['equipment_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->casualLabourLogs()->whereYear('date', $year)->whereMonth('date', $month)->get() as $item) {
+            $date = Carbon::parse($item->date)->format('Y-m-d');
+
+            if (!isset($days[$date])) {
+                $days[$date] = $this->emptyDayRow($date);
+            }
+
+            $days[$date]['labour_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->materialCosts()->whereYear('date', $year)->whereMonth('date', $month)->get() as $item) {
+            $date = Carbon::parse($item->date)->format('Y-m-d');
+
+            if (!isset($days[$date])) {
+                $days[$date] = $this->emptyDayRow($date);
+            }
+
+            $days[$date]['material_cost'] += (float) $item->total;
+        }
+
+        foreach ($days as &$day) {
+            $day['total_cost'] =
+                $day['equipment_cost'] +
+                $day['labour_cost'] +
+                $day['material_cost'];
+        }
+
+        return collect($days)->sortBy('date')->values();
+    }
+
+    private function emptyActivityRow(string $activity): array
+    {
+        return [
+            'activity' => $activity,
+            'equipment_cost' => 0,
+            'labour_cost' => 0,
+            'material_cost' => 0,
+            'total_cost' => 0,
+        ];
+    }
+
+    private function emptyDayRow(string $date): array
+    {
+        return [
+            'date' => $date,
+            'equipment_cost' => 0,
+            'labour_cost' => 0,
+            'material_cost' => 0,
+            'total_cost' => 0,
+        ];
+    }
+
+    private function saveSpreadsheet(Spreadsheet $spreadsheet, string $filename): string
+    {
         $filepath = storage_path("app/exports/{$filename}");
 
-        // Create directory if it doesn't exist
         if (!is_dir(dirname($filepath))) {
             mkdir(dirname($filepath), 0755, true);
         }
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
         $writer->save($filepath);
 
         return $filepath;
-    }
-
-    /**
-     * Add Equipment Logs sheet to spreadsheet
-     */
-    private function addEquipmentLogsSheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Equipment Logs');
-
-        $logs = $project->equipmentLogs()
-            ->whereDate('date', $date)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Date', 'Equipment Type', 'Activity', 'Hours Done', 'Output', 'Recorded By', 'Comment'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Data
-        $row = 2;
-        foreach ($logs as $log) {
-            $sheet->setCellValue("A{$row}", $log->date->format('m/d/Y'));
-            $sheet->setCellValue("B{$row}", $log->equipment_type);
-            $sheet->setCellValue("C{$row}", $log->activity);
-            $sheet->setCellValue("D{$row}", $log->hours_done);
-            $sheet->setCellValue("E{$row}", $log->output);
-            $sheet->setCellValue("F{$row}", $log->user->name);
-            $sheet->setCellValue("G{$row}", $log->comment ?? '');
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Equipment Costs sheet to spreadsheet
-     */
-    private function addEquipmentCostsSheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Equipment Costs');
-
-        $logs = $project->equipmentCosts()
-            ->whereDate('date', $date)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Date', 'Equipment Type', 'Activity', 'Units Done', 'Cost per Unit', 'Total Cost', 'Recorded By'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Data
-        $row = 2;
-        foreach ($logs as $log) {
-            $sheet->setCellValue("A{$row}", $log->date->format('m/d/Y'));
-            $sheet->setCellValue("B{$row}", $log->equipment_type);
-            $sheet->setCellValue("C{$row}", $log->activity);
-            $sheet->setCellValue("D{$row}", $log->units_done);
-            $sheet->setCellValue("E{$row}", $log->cost_per_unit);
-            $sheet->setCellValue("F{$row}", $log->total_cost);
-            $sheet->setCellValue("G{$row}", $log->user->name);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Productivity Logs sheet to spreadsheet
-     */
-    private function addProductivityLogsSheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Productivity Logs');
-
-        $logs = $project->productivityLogs()
-            ->whereDate('date', $date)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Date', 'Activity', 'Equipment', 'Workers', 'Output', 'Output/Worker', 'Recorded By'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Data
-        $row = 2;
-        foreach ($logs as $log) {
-            $sheet->setCellValue("A{$row}", $log->date->format('m/d/Y'));
-            $sheet->setCellValue("B{$row}", $log->activity);
-            $sheet->setCellValue("C{$row}", $log->equipment_name);
-            $sheet->setCellValue("D{$row}", $log->workers);
-            $sheet->setCellValue("E{$row}", $log->output);
-            $sheet->setCellValue("F{$row}", $log->output / max(1, $log->workers));
-            $sheet->setCellValue("G{$row}", $log->user->name);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Labour Logs sheet to spreadsheet
-     */
-    private function addLabourLogsSheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Labour Logs');
-
-        $logs = $project->casualLabourLogs()
-            ->whereDate('date', $date)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Date', 'Activity', 'Classification', 'Workers', 'Wage', 'Total Cost', 'Recorded By'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Data
-        $row = 2;
-        foreach ($logs as $log) {
-            $sheet->setCellValue("A{$row}", $log->date->format('m/d/Y'));
-            $sheet->setCellValue("B{$row}", $log->activity);
-            $sheet->setCellValue("C{$row}", $log->labour_classification);
-            $sheet->setCellValue("D{$row}", $log->number_of_workers);
-            $sheet->setCellValue("E{$row}", $log->wage);
-            $sheet->setCellValue("F{$row}", $log->total_cost);
-            $sheet->setCellValue("G{$row}", $log->user->name);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Material Usage sheet to spreadsheet
-     */
-    private function addMaterialUsageSheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Material Usage');
-
-        $logs = $project->materialUsage()
-            ->whereDate('date', $date)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Date', 'Material', 'Activity', 'Planned Qty', 'Used Qty', 'Difference', 'Recorded By'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Data
-        $row = 2;
-        foreach ($logs as $log) {
-            $sheet->setCellValue("A{$row}", $log->date->format('m/d/Y'));
-            $sheet->setCellValue("B{$row}", $log->material_name);
-            $sheet->setCellValue("C{$row}", $log->activity);
-            $sheet->setCellValue("D{$row}", $log->planned_qty);
-            $sheet->setCellValue("E{$row}", $log->used_qty);
-            $sheet->setCellValue("F{$row}", $log->planned_qty - $log->used_qty);
-            $sheet->setCellValue("G{$row}", $log->user->name);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Material Costs sheet to spreadsheet
-     */
-    private function addMaterialCostsSheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Material Costs');
-
-        $logs = $project->materialCosts()
-            ->whereDate('date', $date)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Date', 'Material', 'Quantity Used', 'Cost per Item', 'Total Cost', 'Recorded By'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Data
-        $row = 2;
-        foreach ($logs as $log) {
-            $sheet->setCellValue("A{$row}", $log->date->format('m/d/Y'));
-            $sheet->setCellValue("B{$row}", $log->material_name);
-            $sheet->setCellValue("C{$row}", $log->used_qty);
-            $sheet->setCellValue("D{$row}", $log->cost_per_item);
-            $sheet->setCellValue("E{$row}", $log->total);
-            $sheet->setCellValue("F{$row}", $log->user->name);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Summary sheet to spreadsheet
-     */
-    private function addSummarySheet(Spreadsheet $spreadsheet, Project $project, string $date): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Summary');
-
-        $row = 1;
-
-        // Title
-        $sheet->setCellValue("A{$row}", "Daily Report Summary");
-        $sheet->getStyle("A{$row}")->getFont()->setBold(true)->setSize(14);
-        $row += 2;
-
-        // Project info
-        $sheet->setCellValue("A{$row}", "Project:");
-        $sheet->setCellValue("B{$row}", $project->name);
-        $row++;
-        $sheet->setCellValue("A{$row}", "Date:");
-        $sheet->setCellValue("B{$row}", $date);
-        $row += 2;
-
-        // Summary statistics
-        $equipmentLogCount = $project->equipmentLogs()->whereDate('date', $date)->count();
-        $equipmentCostTotal = $project->equipmentCosts()->whereDate('date', $date)->sum('total_cost');
-        $labourCostTotal = $project->casualLabourLogs()->whereDate('date', $date)->sum('total_cost');
-        $materialCostTotal = $project->materialCosts()->whereDate('date', $date)->sum('total');
-
-        $sheet->setCellValue("A{$row}", "Equipment Log Records:");
-        $sheet->setCellValue("B{$row}", $equipmentLogCount);
-        $row++;
-        $sheet->setCellValue("A{$row}", "Equipment Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($equipmentCostTotal, 2));
-        $row++;
-        $sheet->setCellValue("A{$row}", "Labour Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($labourCostTotal, 2));
-        $row++;
-        $sheet->setCellValue("A{$row}", "Material Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($materialCostTotal, 2));
-        $row++;
-        $sheet->setCellValue("A{$row}", "Total Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($equipmentCostTotal + $labourCostTotal + $materialCostTotal, 2));
-
-        $this->autoSizeColumns($sheet, 2);
-    }
-
-    /**
-     * Add Monthly Equipment Summary sheet
-     */
-    private function addMonthlyEquipmentSummary(Spreadsheet $spreadsheet, Project $project, int $month, int $year): void
-    {
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Equipment Summary');
-
-        $logs = $project->equipmentCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Equipment Type', 'Total Units', 'Total Cost', 'Avg Cost/Unit'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Group by equipment type
-        $grouped = $logs->groupBy('equipment_type');
-        $row = 2;
-
-        foreach ($grouped as $equipmentType => $items) {
-            $totalUnits = $items->sum('units_done');
-            $totalCost = $items->sum('total_cost');
-            $avgCost = $totalUnits > 0 ? $totalCost / $totalUnits : 0;
-
-            $sheet->setCellValue("A{$row}", $equipmentType);
-            $sheet->setCellValue("B{$row}", $totalUnits);
-            $sheet->setCellValue("C{$row}", $totalCost);
-            $sheet->setCellValue("D{$row}", $avgCost);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Monthly Labour Summary sheet
-     */
-    private function addMonthlyLabourSummary(Spreadsheet $spreadsheet, Project $project, int $month, int $year): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Labour Summary');
-
-        $logs = $project->casualLabourLogs()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Classification', 'Total Workers', 'Total Wages', 'Avg Wage/Worker'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Group by classification
-        $grouped = $logs->groupBy('labour_classification');
-        $row = 2;
-
-        foreach ($grouped as $classification => $items) {
-            $totalWorkers = $items->sum('number_of_workers');
-            $totalCost = $items->sum('total_cost');
-            $avgWage = $totalWorkers > 0 ? $totalCost / $totalWorkers : 0;
-
-            $sheet->setCellValue("A{$row}", $classification);
-            $sheet->setCellValue("B{$row}", $totalWorkers);
-            $sheet->setCellValue("C{$row}", $totalCost);
-            $sheet->setCellValue("D{$row}", $avgWage);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Monthly Material Summary sheet
-     */
-    private function addMonthlyMaterialSummary(Spreadsheet $spreadsheet, Project $project, int $month, int $year): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Material Summary');
-
-        $logs = $project->materialCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->with('user')
-            ->get();
-
-        // Headers
-        $headers = ['Material', 'Total Quantity', 'Total Cost', 'Avg Cost/Item'];
-        $this->styleHeaderRow($sheet, $headers);
-
-        // Group by material
-        $grouped = $logs->groupBy('material_name');
-        $row = 2;
-
-        foreach ($grouped as $material => $items) {
-            $totalQty = $items->sum('used_qty');
-            $totalCost = $items->sum('total');
-            $avgCost = $totalQty > 0 ? $totalCost / $totalQty : 0;
-
-            $sheet->setCellValue("A{$row}", $material);
-            $sheet->setCellValue("B{$row}", $totalQty);
-            $sheet->setCellValue("C{$row}", $totalCost);
-            $sheet->setCellValue("D{$row}", $avgCost);
-            $row++;
-        }
-
-        $this->autoSizeColumns($sheet, count($headers));
-    }
-
-    /**
-     * Add Monthly Statistics sheet
-     */
-    private function addMonthlyStatistics(Spreadsheet $spreadsheet, Project $project, int $month, int $year): void
-    {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle('Statistics');
-
-        $row = 1;
-
-        // Title
-        $sheet->setCellValue("A{$row}", "Monthly Statistics");
-        $sheet->getStyle("A{$row}")->getFont()->setBold(true)->setSize(14);
-        $row += 2;
-
-        // Project info
-        $sheet->setCellValue("A{$row}", "Project:");
-        $sheet->setCellValue("B{$row}", $project->name);
-        $row++;
-        $sheet->setCellValue("A{$row}", "Period:");
-        $sheet->setCellValue("B{$row}", date('F Y', mktime(0, 0, 0, $month, 1, $year)));
-        $row += 2;
-
-        // Summary statistics
-        $equipmentCostTotal = $project->equipmentCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('total_cost');
-
-        $labourCostTotal = $project->casualLabourLogs()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('total_cost');
-
-        $materialCostTotal = $project->materialCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('total');
-
-        $totalCost = $equipmentCostTotal + $labourCostTotal + $materialCostTotal;
-
-        $sheet->setCellValue("A{$row}", "Equipment Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($equipmentCostTotal, 2));
-        $row++;
-        $sheet->setCellValue("A{$row}", "Labour Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($labourCostTotal, 2));
-        $row++;
-        $sheet->setCellValue("A{$row}", "Material Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($materialCostTotal, 2));
-        $row++;
-        $sheet->setCellValue("A{$row}", "Total Costs:");
-        $sheet->setCellValue("B{$row}", '$' . number_format($totalCost, 2));
-
-        $this->autoSizeColumns($sheet, 2);
-    }
-
-    /**
-     * Style header row with background color and bold text
-     */
-    private function styleHeaderRow($sheet, array $headers): void
-    {
-        $col = 'A';
-        foreach ($headers as $header) {
-            $sheet->setCellValue("{$col}1", $header);
-            $sheet->getStyle("{$col}1")->getFont()->setBold(true)->setColor(new Color('FFFFFF'));
-            $sheet->getStyle("{$col}1")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF1F4E78');
-            $col++;
-        }
-    }
-
-    /**
-     * Auto-size columns based on content
-     */
-    private function autoSizeColumns($sheet, int $columnCount): void
-    {
-        for ($i = 0; $i < $columnCount; $i++) {
-            $sheet->getColumnDimensionByColumn($i + 1)->setAutoSize(true);
-        }
     }
 }

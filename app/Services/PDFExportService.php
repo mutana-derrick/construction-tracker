@@ -4,120 +4,180 @@ namespace App\Services;
 
 use App\Models\Project;
 use Dompdf\Dompdf;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 
 class PDFExportService
 {
-    /**
-     * Export daily report to PDF
-     */
     public function exportDailyReport(Project $project, string $date): string
     {
+        $activities = $this->getDailyActivityCosts($project, $date);
+
         $data = [
             'project' => $project,
             'date' => $date,
-            'equipmentLogs' => $project->equipmentLogs()
-                ->whereDate('date', $date)
-                ->with('user')
-                ->get(),
-            'equipmentCosts' => $project->equipmentCosts()
-                ->whereDate('date', $date)
-                ->with('user')
-                ->get(),
-            'productivityLogs' => $project->productivityLogs()
-                ->whereDate('date', $date)
-                ->with('user')
-                ->get(),
-            'labourLogs' => $project->casualLabourLogs()
-                ->whereDate('date', $date)
-                ->with('user')
-                ->get(),
-            'materialUsage' => $project->materialUsage()
-                ->whereDate('date', $date)
-                ->with('user')
-                ->get(),
-            'materialCosts' => $project->materialCosts()
-                ->whereDate('date', $date)
-                ->with('user')
-                ->get(),
+            'activities' => $activities,
+            'equipmentCostTotal' => $activities->sum('equipment_cost'),
+            'labourCostTotal' => $activities->sum('labour_cost'),
+            'materialCostTotal' => $activities->sum('material_cost'),
+            'totalCost' => $activities->sum('total_cost'),
         ];
 
-        // Calculate totals
-        $data['equipmentCostTotal'] = $data['equipmentCosts']->sum('total_cost');
-        $data['labourCostTotal'] = $data['labourLogs']->sum('total_cost');
-        $data['materialCostTotal'] = $data['materialCosts']->sum('total');
-        $data['totalCost'] = $data['equipmentCostTotal'] + $data['labourCostTotal'] + $data['materialCostTotal'];
-
-        // Generate HTML from view
         $html = View::make('exports.daily-report', $data)->render();
 
-        // Create PDF
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        // Save to file
-        $filename = "daily_report_{$project->id}_{$date}_" . time() . '.pdf';
-        $filepath = storage_path("app/exports/{$filename}");
-
-        // Create directory if it doesn't exist
-        if (!is_dir(dirname($filepath))) {
-            mkdir(dirname($filepath), 0755, true);
-        }
-
-        file_put_contents($filepath, $dompdf->output());
-
-        return $filepath;
+        return $this->savePdf(
+            $html,
+            "daily_report_{$project->id}_{$date}_" . time() . '.pdf'
+        );
     }
 
-    /**
-     * Export monthly report to PDF
-     */
     public function exportMonthlyReport(Project $project, int $month, int $year): string
     {
+        $dailyRows = $this->getMonthlyDailyCosts($project, $month, $year);
+        $monthName = date('F', mktime(0, 0, 0, $month, 1));
+
         $data = [
             'project' => $project,
             'month' => $month,
             'year' => $year,
-            'monthName' => date('F', mktime(0, 0, 0, $month, 1)),
-            'equipmentSummary' => $this->getEquipmentSummary($project, $month, $year),
-            'labourSummary' => $this->getLabourSummary($project, $month, $year),
-            'materialSummary' => $this->getMaterialSummary($project, $month, $year),
+            'monthName' => $monthName,
+            'dailyRows' => $dailyRows,
+            'equipmentCostTotal' => $dailyRows->sum('equipment_cost'),
+            'labourCostTotal' => $dailyRows->sum('labour_cost'),
+            'materialCostTotal' => $dailyRows->sum('material_cost'),
+            'totalCost' => $dailyRows->sum('total_cost'),
         ];
 
-        // Calculate totals
-        $data['equipmentCostTotal'] = $project->equipmentCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('total_cost');
-
-        $data['labourCostTotal'] = $project->casualLabourLogs()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('total_cost');
-
-        $data['materialCostTotal'] = $project->materialCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->sum('total');
-
-        $data['totalCost'] = $data['equipmentCostTotal'] + $data['labourCostTotal'] + $data['materialCostTotal'];
-
-        // Generate HTML from view
         $html = View::make('exports.monthly-report', $data)->render();
 
-        // Create PDF
+        return $this->savePdf(
+            $html,
+            "monthly_report_{$project->id}_{$month}_{$year}_" . time() . '.pdf'
+        );
+    }
+
+    private function getDailyActivityCosts(Project $project, string $date): Collection
+    {
+        $activities = [];
+
+        foreach ($project->equipmentCosts()->whereDate('date', $date)->get() as $item) {
+            $activity = $item->activity;
+
+            if (!isset($activities[$activity])) {
+                $activities[$activity] = $this->emptyActivityRow($activity);
+            }
+
+            $activities[$activity]['equipment_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->casualLabourLogs()->whereDate('date', $date)->get() as $item) {
+            $activity = $item->activity;
+
+            if (!isset($activities[$activity])) {
+                $activities[$activity] = $this->emptyActivityRow($activity);
+            }
+
+            $activities[$activity]['labour_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->materialCosts()->whereDate('date', $date)->get() as $item) {
+            $activity = $item->activity ?? 'Material Cost';
+
+            if (!isset($activities[$activity])) {
+                $activities[$activity] = $this->emptyActivityRow($activity);
+            }
+
+            $activities[$activity]['material_cost'] += (float) $item->total;
+        }
+
+        foreach ($activities as &$activity) {
+            $activity['total_cost'] =
+                $activity['equipment_cost'] +
+                $activity['labour_cost'] +
+                $activity['material_cost'];
+        }
+
+        return collect($activities)->sortBy('activity')->values();
+    }
+
+    private function getMonthlyDailyCosts(Project $project, int $month, int $year): Collection
+    {
+        $days = [];
+
+        foreach ($project->equipmentCosts()->whereYear('date', $year)->whereMonth('date', $month)->get() as $item) {
+            $date = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+
+            if (!isset($days[$date])) {
+                $days[$date] = $this->emptyDayRow($date);
+            }
+
+            $days[$date]['equipment_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->casualLabourLogs()->whereYear('date', $year)->whereMonth('date', $month)->get() as $item) {
+            $date = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+
+            if (!isset($days[$date])) {
+                $days[$date] = $this->emptyDayRow($date);
+            }
+
+            $days[$date]['labour_cost'] += (float) $item->total_cost;
+        }
+
+        foreach ($project->materialCosts()->whereYear('date', $year)->whereMonth('date', $month)->get() as $item) {
+            $date = \Carbon\Carbon::parse($item->date)->format('Y-m-d');
+
+            if (!isset($days[$date])) {
+                $days[$date] = $this->emptyDayRow($date);
+            }
+
+            $days[$date]['material_cost'] += (float) $item->total;
+        }
+
+        foreach ($days as &$day) {
+            $day['total_cost'] =
+                $day['equipment_cost'] +
+                $day['labour_cost'] +
+                $day['material_cost'];
+        }
+
+        return collect($days)->sortBy('date')->values();
+    }
+
+    private function emptyActivityRow(string $activity): array
+    {
+        return [
+            'activity' => $activity,
+            'equipment_cost' => 0,
+            'labour_cost' => 0,
+            'material_cost' => 0,
+            'total_cost' => 0,
+        ];
+    }
+
+    private function emptyDayRow(string $date): array
+    {
+        return [
+            'date' => $date,
+            'equipment_cost' => 0,
+            'labour_cost' => 0,
+            'material_cost' => 0,
+            'total_cost' => 0,
+        ];
+    }
+
+
+
+
+    private function savePdf(string $html, string $filename): string
+    {
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        // Save to file
-        $filename = "monthly_report_{$project->id}_{$month}_{$year}_" . time() . '.pdf';
         $filepath = storage_path("app/exports/{$filename}");
 
-        // Create directory if it doesn't exist
         if (!is_dir(dirname($filepath))) {
             mkdir(dirname($filepath), 0755, true);
         }
@@ -125,74 +185,5 @@ class PDFExportService
         file_put_contents($filepath, $dompdf->output());
 
         return $filepath;
-    }
-
-    /**
-     * Get equipment summary for monthly report
-     */
-    private function getEquipmentSummary(Project $project, int $month, int $year): array
-    {
-        $logs = $project->equipmentCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->get();
-
-        $summary = [];
-        foreach ($logs->groupBy('equipment_type') as $equipmentType => $items) {
-            $summary[] = [
-                'equipment' => $equipmentType,
-                'totalUnits' => $items->sum('units_done'),
-                'totalCost' => $items->sum('total_cost'),
-                'avgCost' => $items->count() > 0 ? $items->sum('total_cost') / $items->sum('units_done') : 0,
-            ];
-        }
-
-        return $summary;
-    }
-
-    /**
-     * Get labour summary for monthly report
-     */
-    private function getLabourSummary(Project $project, int $month, int $year): array
-    {
-        $logs = $project->casualLabourLogs()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->get();
-
-        $summary = [];
-        foreach ($logs->groupBy('labour_classification') as $classification => $items) {
-            $summary[] = [
-                'classification' => $classification,
-                'totalWorkers' => $items->sum('number_of_workers'),
-                'totalCost' => $items->sum('total_cost'),
-                'avgWage' => $items->sum('number_of_workers') > 0 ? $items->sum('total_cost') / $items->sum('number_of_workers') : 0,
-            ];
-        }
-
-        return $summary;
-    }
-
-    /**
-     * Get material summary for monthly report
-     */
-    private function getMaterialSummary(Project $project, int $month, int $year): array
-    {
-        $logs = $project->materialCosts()
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->get();
-
-        $summary = [];
-        foreach ($logs->groupBy('material_name') as $material => $items) {
-            $summary[] = [
-                'material' => $material,
-                'totalQty' => $items->sum('used_qty'),
-                'totalCost' => $items->sum('total'),
-                'avgCost' => $items->sum('used_qty') > 0 ? $items->sum('total') / $items->sum('used_qty') : 0,
-            ];
-        }
-
-        return $summary;
     }
 }

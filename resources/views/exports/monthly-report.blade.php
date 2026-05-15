@@ -4,243 +4,113 @@
     <meta charset="utf-8">
     <title>Monthly Report - {{ $project->name }}</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            color: #333;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #1F4E78;
-            padding-bottom: 15px;
-        }
-        .header h1 {
-            margin: 0 0 5px 0;
-            color: #1F4E78;
-        }
-        .header p {
-            margin: 3px 0;
-            font-size: 13px;
-            color: #666;
-        }
-        .section {
-            margin-bottom: 25px;
-        }
-        .section-title {
-            background-color: #1F4E78;
-            color: white;
-            padding: 10px 15px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 12px;
-        }
-        table th {
-            background-color: #EAF06A;
-            color: #1F4E78;
-            padding: 10px;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid #ddd;
-        }
-        table td {
-            padding: 8px 10px;
-            border: 1px solid #ddd;
-        }
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .total-row {
-            background-color: #EAF06A;
-            font-weight: bold;
-        }
-        .summary-box {
-            background-color: #f0f0f0;
-            border-left: 4px solid #1F4E78;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: inline-block;
-            margin-right: 20px;
-            min-width: 150px;
-        }
-        .summary-box-title {
-            color: #1F4E78;
-            font-weight: bold;
-            font-size: 11px;
-        }
-        .summary-box-value {
-            color: #333;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-        .page-break {
-            page-break-after: always;
-        }
+        body { font-family: DejaVu Sans, sans-serif; margin: 24px; color: #1F2937; font-size: 12px; }
+        .header { border-bottom: 3px solid #E1AD01; padding-bottom: 14px; margin-bottom: 22px; }
+        .brand { font-size: 18px; font-weight: bold; color: #1F2937; }
+        .subtitle { font-size: 11px; color: #6B7280; margin-top: 3px; }
+        .report-title { margin-top: 16px; font-size: 22px; font-weight: bold; color: #1F2937; }
+        .meta { width: 100%; margin-top: 12px; border-collapse: collapse; }
+        .meta td { padding: 6px 8px; border: 1px solid #E5E7EB; }
+        .meta .label { background: #F8FAFC; font-weight: bold; width: 25%; }
+        .summary { margin: 20px 0; width: 100%; border-collapse: collapse; }
+        .summary td { border: 1px solid #E5E7EB; padding: 10px; }
+        .summary .label { background: #F8FAFC; font-weight: bold; }
+        .summary .grand { background: #FFEA9D; font-weight: bold; }
+        .section-title { background: #1F2937; color: white; padding: 10px; font-weight: bold; margin-top: 18px; }
+        table.data { width: 100%; border-collapse: collapse; margin-top: 0; }
+        table.data th { background: #FFEA9D; color: #1F2937; padding: 9px; border: 1px solid #E5E7EB; text-align: left; }
+        table.data td { padding: 8px 9px; border: 1px solid #E5E7EB; }
+        .text-right { text-align: right; }
+        .total-row { background: #F8FAFC; font-weight: bold; }
+        .empty { padding: 18px; border: 1px solid #E5E7EB; color: #6B7280; }
+        .footer { margin-top: 40px; border-top: 1px solid #E5E7EB; padding-top: 12px; font-size: 10px; color: #6B7280; }
+        .signatures { width: 100%; margin-top: 45px; }
+        .signatures td { width: 50%; padding-top: 35px; border-top: 1px solid #9CA3AF; text-align: center; font-size: 11px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>{{ $project->name }}</h1>
-        <p><strong>Monthly Report</strong> - {{ $monthName }} {{ $year }}</p>
-        <p>Report Generated: {{ date('M d, Y H:i:s') }}</p>
+        <div class="brand">Construction Productivity Tracking System</div>
+        <div class="subtitle">Professional Monthly Site Cost Summary</div>
+
+        <div class="report-title">Monthly Cost Report</div>
+
+        <table class="meta">
+            <tr>
+                <td class="label">Project</td>
+                <td>{{ $project->name }}</td>
+                <td class="label">Location</td>
+                <td>{{ $project->location ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="label">Month</td>
+                <td>{{ $monthName }} {{ $year }}</td>
+                <td class="label">Generated At</td>
+                <td>{{ now()->format('F j, Y g:i A') }}</td>
+            </tr>
+        </table>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="section">
-        <div class="summary-box">
-            <div class="summary-box-title">Equipment Cost</div>
-            <div class="summary-box-value">Php {{ number_format($equipmentCostTotal, 2) }}</div>
-        </div>
-        <div class="summary-box">
-            <div class="summary-box-title">Labour Cost</div>
-            <div class="summary-box-value">Php {{ number_format($labourCostTotal, 2) }}</div>
-        </div>
-        <div class="summary-box">
-            <div class="summary-box-title">Material Cost</div>
-            <div class="summary-box-value">Php {{ number_format($materialCostTotal, 2) }}</div>
-        </div>
-        <div class="summary-box">
-            <div class="summary-box-title">TOTAL COST</div>
-            <div class="summary-box-value">Php {{ number_format($totalCost, 2) }}</div>
-        </div>
-    </div>
+    <table class="summary">
+        <tr>
+            <td class="label">Total Equipment Cost</td>
+            <td class="text-right">Rwf {{ number_format($equipmentCostTotal, 0) }}</td>
+            <td class="label">Total Labour Cost</td>
+            <td class="text-right">Rwf {{ number_format($labourCostTotal, 0) }}</td>
+        </tr>
+        <tr>
+            <td class="label">Total Material Cost</td>
+            <td class="text-right">Rwf {{ number_format($materialCostTotal, 0) }}</td>
+            <td class="grand">Grand Total</td>
+            <td class="grand text-right">Rwf {{ number_format($totalCost, 0) }}</td>
+        </tr>
+    </table>
 
-    @if(count($equipmentSummary) > 0)
-    <div class="section">
-        <div class="section-title">Equipment Summary by Type</div>
-        <table>
+    <div class="section-title">Daily Cost Summary</div>
+
+    @if($dailyRows->count() > 0)
+        <table class="data">
             <thead>
                 <tr>
-                    <th>Equipment Type</th>
-                    <th>Total Units</th>
-                    <th>Total Cost</th>
-                    <th>Average Cost Per Unit</th>
+                    <th>Date</th>
+                    <th class="text-right">Equipment Cost</th>
+                    <th class="text-right">Labour Cost</th>
+                    <th class="text-right">Material Cost</th>
+                    <th class="text-right">Total Cost</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($equipmentSummary as $item)
-                <tr>
-                    <td>{{ $item['equipment'] }}</td>
-                    <td>{{ number_format($item['totalUnits'], 2) }}</td>
-                    <td>Php {{ number_format($item['totalCost'], 2) }}</td>
-                    <td>Php {{ number_format($item['avgCost'], 2) }}</td>
-                </tr>
+                @foreach($dailyRows as $row)
+                    <tr>
+                        <td>{{ date('M d, Y', strtotime($row['date'])) }}</td>
+                        <td class="text-right">Rwf {{ number_format($row['equipment_cost'], 0) }}</td>
+                        <td class="text-right">Rwf {{ number_format($row['labour_cost'], 0) }}</td>
+                        <td class="text-right">Rwf {{ number_format($row['material_cost'], 0) }}</td>
+                        <td class="text-right">Rwf {{ number_format($row['total_cost'], 0) }}</td>
+                    </tr>
                 @endforeach
                 <tr class="total-row">
-                    <td>TOTAL</td>
-                    <td>{{ number_format(collect($equipmentSummary)->sum('totalUnits'), 2) }}</td>
-                    <td>Php {{ number_format(collect($equipmentSummary)->sum('totalCost'), 2) }}</td>
-                    <td></td>
+                    <td>Total</td>
+                    <td class="text-right">Rwf {{ number_format($equipmentCostTotal, 0) }}</td>
+                    <td class="text-right">Rwf {{ number_format($labourCostTotal, 0) }}</td>
+                    <td class="text-right">Rwf {{ number_format($materialCostTotal, 0) }}</td>
+                    <td class="text-right">Rwf {{ number_format($totalCost, 0) }}</td>
                 </tr>
             </tbody>
         </table>
-    </div>
+    @else
+        <div class="empty">No cost records found for this project in the selected month.</div>
     @endif
 
-    @if(count($labourSummary) > 0)
-    <div class="section">
-        <div class="section-title">Labour Summary by Classification</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Labour Classification</th>
-                    <th>Total Workers</th>
-                    <th>Total Cost</th>
-                    <th>Average Wage Per Worker</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($labourSummary as $item)
-                <tr>
-                    <td>{{ $item['classification'] }}</td>
-                    <td>{{ number_format($item['totalWorkers'], 0) }}</td>
-                    <td>Php {{ number_format($item['totalCost'], 2) }}</td>
-                    <td>Php {{ number_format($item['avgWage'], 2) }}</td>
-                </tr>
-                @endforeach
-                <tr class="total-row">
-                    <td>TOTAL</td>
-                    <td>{{ number_format(collect($labourSummary)->sum('totalWorkers'), 0) }}</td>
-                    <td>Php {{ number_format(collect($labourSummary)->sum('totalCost'), 2) }}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    @endif
+    <table class="signatures">
+        <tr>
+            <td>Prepared By</td>
+            <td>Checked / Approved By</td>
+        </tr>
+    </table>
 
-    @if(count($materialSummary) > 0)
-    <div class="section">
-        <div class="section-title">Material Summary by Type</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Material</th>
-                    <th>Total Quantity Used</th>
-                    <th>Total Cost</th>
-                    <th>Average Cost Per Item</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($materialSummary as $item)
-                <tr>
-                    <td>{{ $item['material'] }}</td>
-                    <td>{{ number_format($item['totalQty'], 2) }}</td>
-                    <td>Php {{ number_format($item['totalCost'], 2) }}</td>
-                    <td>Php {{ number_format($item['avgCost'], 2) }}</td>
-                </tr>
-                @endforeach
-                <tr class="total-row">
-                    <td>TOTAL</td>
-                    <td>{{ number_format(collect($materialSummary)->sum('totalQty'), 2) }}</td>
-                    <td>Php {{ number_format(collect($materialSummary)->sum('totalCost'), 2) }}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    @endif
-
-    <div class="section">
-        <div class="section-title">Monthly Statistics</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Equipment Cost Total</td>
-                    <td>Php {{ number_format($equipmentCostTotal, 2) }}</td>
-                </tr>
-                <tr>
-                    <td>Labour Cost Total</td>
-                    <td>Php {{ number_format($labourCostTotal, 2) }}</td>
-                </tr>
-                <tr>
-                    <td>Material Cost Total</td>
-                    <td>Php {{ number_format($materialCostTotal, 2) }}</td>
-                </tr>
-                <tr class="total-row">
-                    <td>TOTAL MONTHLY COST</td>
-                    <td>Php {{ number_format($totalCost, 2) }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="footer" style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 11px; color: #666;">
-        <p>This is an automatically generated report for {{ $monthName }} {{ $year }}.</p>
-        <p>For any discrepancies, please verify with the original entries.</p>
+    <div class="footer">
+        This report was generated automatically for {{ $monthName }} {{ $year }}. Please verify unusual values against the original daily entries.
     </div>
 </body>
 </html>
