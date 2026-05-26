@@ -92,6 +92,10 @@ class ProductivityLogController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['date'] = now()->toDateString();
 
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
+
         try {
             ProductivityLog::create($validated);
             return redirect()
@@ -156,6 +160,10 @@ class ProductivityLogController extends Controller
             'output' => 'required|numeric|min:0',
             'comment' => 'nullable|string|max:500',
         ]);
+
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
 
         try {
             $productivityLog->update($validated);

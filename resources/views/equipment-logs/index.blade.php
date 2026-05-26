@@ -65,17 +65,17 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ \Carbon\Carbon::parse($log->date)->format('M d, Y') }}</td>
                         <td class="px-6 py-4 text-gray-600">{{ $log->equipment_type }}</td>
-                        <td class="px-6 py-4 font-mono text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">{{ $log->equipment_id }}</td>
+                        <td class="px-6 py-4 font-mono text-xs text-gray-500">{{ $log->equipment_id }}</td>
                         <td class="px-6 py-4 text-gray-600">{{ Str::limit($log->activity, 30) }}</td>
                         <td class="px-6 py-4 text-gray-900 font-medium">{{ number_format($log->actual_output, 2) }}</td>
                         <td class="px-6 py-4 text-gray-600">{{ number_format($log->working_hours, 1) }}h / {{ number_format($log->available_hours, 1) }}h</td>
                         <td class="px-6 py-4">
                             @if($log->working_hours > 0)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold @if($log->productivity >= 0.8) bg-green-100 text-green-700 border border-green-200 @elseif($log->productivity >= 0.6) bg-yellow-100 text-yellow-700 border border-yellow-200 @else bg-red-100 text-red-700 border border-red-200 @endif">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                   <path fill-rule="evenodd" d="M12 7a1 1 0 110-2 1 1 0 010 2zM9 11a1 1 0 100-2 1 1 0 000 2zm6 0a1 1 0 100-2 1 1 0 000 2zM9 15a1 1 0 100-2 1 1 0 000 2zm6 0a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                                 </svg>
-                                {{ number_format($log->productivity * 100, 1) }}%
+                                {{ number_format($log->productivity, 2) }} units/hr
                             </span>
                             @else
                             <span class="text-gray-400 text-sm">—</span>

@@ -25,6 +25,7 @@
 
         <!-- Hidden Project ID -->
         <input type="hidden" name="project_id" value="{{ $project->id }}">
+  <input type="hidden" name="redirect_to" value="{{ route('equipment-logs.index', ['project_id' => $project->id]) }}">
 
         <!-- Error Messages -->
         @if ($errors->any())

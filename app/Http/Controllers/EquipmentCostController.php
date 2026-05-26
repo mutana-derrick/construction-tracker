@@ -76,6 +76,11 @@ class EquipmentCostController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['date'] = now()->toDateString();
 
+        // Backfill legacy free-text column for backward compatibility.
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
+
         // Calculate total cost
         $validated['total_cost'] = $validated['units_done'] * $validated['cost_per_unit'];
 
@@ -143,6 +148,10 @@ class EquipmentCostController extends Controller
             'cost_per_unit' => 'required|numeric|min:0',
             'comment' => 'nullable|string|max:500',
         ]);
+
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
 
         // Calculate total cost
         $validated['total_cost'] = $validated['units_done'] * $validated['cost_per_unit'];

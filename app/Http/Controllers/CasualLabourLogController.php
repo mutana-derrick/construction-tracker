@@ -91,6 +91,10 @@ class CasualLabourLogController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['date'] = now()->toDateString();
 
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
+
         // Calculate total cost
         $validated['total_cost'] = $validated['number_of_workers'] * $validated['wage'];
 
@@ -157,6 +161,10 @@ class CasualLabourLogController extends Controller
             'number_of_workers' => 'required|integer|min:1',
             'wage' => 'required|numeric|min:0',
         ]);
+
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
 
         // Calculate total cost
         $validated['total_cost'] = $validated['number_of_workers'] * $validated['wage'];

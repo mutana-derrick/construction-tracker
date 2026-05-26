@@ -91,6 +91,10 @@ class MaterialUsageController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['date'] = now()->toDateString();
 
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
+
         try {
             MaterialUsage::create($validated);
             return redirect()
@@ -154,6 +158,10 @@ class MaterialUsageController extends Controller
             'planned_qty' => 'required|numeric|min:0',
             'used_qty' => 'required|numeric|min:0',
         ]);
+
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
 
         try {
             $materialUsage->update($validated);

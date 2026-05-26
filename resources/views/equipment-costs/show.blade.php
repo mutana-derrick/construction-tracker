@@ -17,7 +17,7 @@
 
     <!-- 5-Minute Edit Status -->
     @php
-        $editDeadline = $log->created_at->copy()->addMinutes(5);
+        $editDeadline = $cost->created_at->copy()->addMinutes(5);
         $isEditable = $editDeadline->isFuture();
         $minutesLeft = max(0, now()->diffInMinutes($editDeadline, false));
     @endphp
@@ -32,7 +32,7 @@
         </p>
 
         <p class="text-sm mt-1 text-gray-600">
-            Created at {{ $log->created_at->format('g:i A') }} • 
+            Created at {{ $cost->created_at->format('g:i A') }} • 
             {{ $isEditable ? $minutesLeft . ' minutes remaining' : 'No longer editable' }}
         </p>
 
@@ -50,7 +50,7 @@
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-gray-600">Activity</dt>
-                        <dd class="text-gray-900">{{ $cost->activity }}</dd>
+                        <dd class="text-gray-900">{{ $cost->activity?->name ?? $cost->activity ?? 'Unassigned Activity' }}</dd>
                     </div>
                 </dl>
             </div>

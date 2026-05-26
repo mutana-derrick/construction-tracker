@@ -91,6 +91,10 @@ class MaterialCostController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['date'] = now()->toDateString();
 
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
+
         // Calculate total cost
         $validated['total'] = $validated['used_qty'] * $validated['cost_per_item'];
 
@@ -157,6 +161,10 @@ class MaterialCostController extends Controller
             'used_qty' => 'required|numeric|min:0',
             'cost_per_item' => 'required|numeric|min:0',
         ]);
+
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
 
         // Calculate total cost
         $validated['total'] = $validated['used_qty'] * $validated['cost_per_item'];

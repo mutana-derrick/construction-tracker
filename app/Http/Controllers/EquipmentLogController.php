@@ -80,10 +80,20 @@ class EquipmentLogController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['date'] = now()->toDateString();
 
+        // Backfill legacy free-text column for backward compatibility.
+        // Some environments still have `activity` as NOT NULL.
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
+
         try {
             EquipmentLog::create($validated);
+
+            $fallbackRedirect = route('equipment-logs.index', ['project_id' => $validated['project_id']]);
+            $redirectTo = $request->input('redirect_to');
+
             return redirect()
-                ->route('equipment-logs.index', ['project_id' => $validated['project_id']])
+                ->to($redirectTo ?: $fallbackRedirect)
                 ->with('success', 'Equipment log created successfully.');
         } catch (\Exception $e) {
             return back()
@@ -148,6 +158,11 @@ class EquipmentLogController extends Controller
             'fuel_used' => 'nullable|numeric|min:0',
             'comment' => 'nullable|string|max:500',
         ]);
+
+        // Keep legacy column in sync for now.
+        $validated['activity'] = Activity::query()
+            ->whereKey($validated['activity_id'])
+            ->value('name');
 
         try {
             $equipmentLog->update($validated);
