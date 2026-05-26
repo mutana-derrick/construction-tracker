@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\EquipmentCost;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class EquipmentCostController extends Controller
     {
         $projectId = $request->query('project_id');
         $project = Project::findOrFail($projectId);
+        $this->authorize('view', $project);
 
         // Get all equipment costs for this project
         $costs = EquipmentCost::where('project_id', $projectId)
@@ -37,12 +39,14 @@ class EquipmentCostController extends Controller
     {
         $projectId = $request->query('project_id');
         $project = Project::findOrFail($projectId);
+        $this->authorize('view', $project);
 
         // Check authorization
         $this->authorize('create', EquipmentCost::class);
 
         return view('equipment-costs.create', [
             'project' => $project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -57,12 +61,16 @@ class EquipmentCostController extends Controller
         // Validate input
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'equipment_type' => 'required|string|max:100',
             'units_done' => 'required|numeric|min:0',
             'cost_per_unit' => 'required|numeric|min:0',
             'comment' => 'nullable|string|max:500',
         ]);
+        
+        $project = Project::findOrFail($validated['project_id']);
+
+        $this->authorize('view', $project);
 
         // Auto-assign current user and today's date
         $validated['user_id'] = Auth::id();
@@ -113,6 +121,7 @@ class EquipmentCostController extends Controller
         return view('equipment-costs.edit', [
             'cost' => $equipmentCost,
             'project' => $equipmentCost->project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -128,7 +137,7 @@ class EquipmentCostController extends Controller
 
         // Validate input
         $validated = $request->validate([
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'equipment_type' => 'required|string|max:100',
             'units_done' => 'required|numeric|min:0',
             'cost_per_unit' => 'required|numeric|min:0',

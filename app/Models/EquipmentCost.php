@@ -12,6 +12,7 @@ class EquipmentCost extends Model
         'user_id',
         'date',
         'activity',
+        'activity_id',
         'equipment_type',
         'units_done',
         'cost_per_unit',
@@ -41,5 +42,10 @@ class EquipmentCost extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 }

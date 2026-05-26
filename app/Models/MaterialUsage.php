@@ -15,6 +15,7 @@ class MaterialUsage extends Model
         'date',
         'material_name',
         'activity',
+        'activity_id',
         'planned_qty',
         'used_qty',
     ];
@@ -41,6 +42,11 @@ class MaterialUsage extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 
     /**

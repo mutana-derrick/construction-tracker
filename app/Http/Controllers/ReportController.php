@@ -195,7 +195,7 @@ class ReportController extends Controller
         $activities = [];
 
         foreach ($project->equipmentCosts()->whereDate('date', $date)->get() as $item) {
-            $activity = $item->activity;
+        $activity = $item->activity?->name ?? $item->activity ?? 'Unassigned Activity';
 
             if (!isset($activities[$activity])) {
                 $activities[$activity] = $this->emptyActivityRow($activity);
@@ -205,7 +205,7 @@ class ReportController extends Controller
         }
 
         foreach ($project->casualLabourLogs()->whereDate('date', $date)->get() as $item) {
-            $activity = $item->activity;
+            $activity = $item->activity?->name ?? $item->activity ?? 'Unassigned Activity';
 
             if (!isset($activities[$activity])) {
                 $activities[$activity] = $this->emptyActivityRow($activity);
@@ -215,7 +215,7 @@ class ReportController extends Controller
         }
 
         foreach ($project->materialCosts()->whereDate('date', $date)->get() as $item) {
-            $activity = $item->activity ?? 'Material Cost';
+            $activity = $item->activity?->name ?? $item->activity ?? 'Unassigned Activity';
 
             if (!isset($activities[$activity])) {
                 $activities[$activity] = $this->emptyActivityRow($activity);

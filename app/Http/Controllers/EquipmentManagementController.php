@@ -20,6 +20,8 @@ class EquipmentManagementController extends Controller
         }
 
         $project = Project::findOrFail($projectId);
+        
+        $this->authorize('view', $project);
 
         $logs = EquipmentLog::where('project_id', $project->id)
             ->with(['user', 'project'])

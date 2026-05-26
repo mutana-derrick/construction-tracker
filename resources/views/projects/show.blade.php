@@ -117,7 +117,7 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+    {{-- <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
       <h2 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
         <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -150,10 +150,10 @@
           </a>
         @endcan
       </div>
-    </div>
+    </div> --}}
 
     <!-- Tabs for Different Log Types -->
-    <div x-data="{ activeTab: 'equipment' }" class="space-y-4">
+    {{-- <div x-data="{ activeTab: 'equipment' }" class="space-y-4">
       <!-- Tab Navigation -->
       <div class="bg-white rounded-xl border border-gray-200">
         <div class="flex gap-0 border-b border-gray-200">
@@ -363,7 +363,7 @@
           </div>
         @endif
       </div>
-    </div>
+    </div> --}}
   </div>
 
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>

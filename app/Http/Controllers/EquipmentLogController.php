@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\EquipmentLog;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class EquipmentLogController extends Controller
     {
         $projectId = $request->query('project_id');
         $project = Project::findOrFail($projectId);
+        $this->authorize('view', $project);
 
         // Get all equipment logs for this project
         $logs = EquipmentLog::where('project_id', $projectId)
@@ -37,12 +39,14 @@ class EquipmentLogController extends Controller
     {
         $projectId = $request->query('project_id');
         $project = Project::findOrFail($projectId);
+        $this->authorize('view', $project);
 
         // Check authorization
         $this->authorize('create', EquipmentLog::class);
 
         return view('equipment-logs.create', [
             'project' => $project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -59,7 +63,7 @@ class EquipmentLogController extends Controller
             'project_id' => 'required|exists:projects,id',
             'equipment_type' => 'required|string|max:100',
             'equipment_id' => 'required|string|max:100',
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'planned_output' => 'required|numeric|min:0',
             'actual_output' => 'required|numeric|min:0',
             'working_hours' => 'required|numeric|min:0',
@@ -67,6 +71,10 @@ class EquipmentLogController extends Controller
             'fuel_used' => 'nullable|numeric|min:0',
             'comment' => 'nullable|string|max:500',
         ]);
+
+        $project = Project::findOrFail($validated['project_id']);
+
+        $this->authorize('view', $project);
 
         // Auto-assign current user and today's date
         $validated['user_id'] = Auth::id();
@@ -114,6 +122,7 @@ class EquipmentLogController extends Controller
         return view('equipment-logs.edit', [
             'log' => $equipmentLog,
             'project' => $equipmentLog->project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -131,7 +140,7 @@ class EquipmentLogController extends Controller
         $validated = $request->validate([
             'equipment_type' => 'required|string|max:100',
             'equipment_id' => 'required|string|max:100',
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'planned_output' => 'required|numeric|min:0',
             'actual_output' => 'required|numeric|min:0',
             'working_hours' => 'required|numeric|min:0',
@@ -159,8 +168,9 @@ class EquipmentLogController extends Controller
      */
     public function destroy(EquipmentLog $equipmentLog)
     {
-        return response()->json(
-            ['message' => 'Equipment logs cannot be deleted to maintain audit compliance.'],
+        return redirect()->back()->with(
+            'error',
+            'Delete operations are not allowed for audit purposes.',
             403
         );
     }

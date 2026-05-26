@@ -14,6 +14,7 @@ class CasualLabourLog extends Model
         'user_id',
         'date',
         'activity',
+        'activity_id',
         'labour_classification',
         'number_of_workers',
         'wage',
@@ -42,5 +43,10 @@ class CasualLabourLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 }

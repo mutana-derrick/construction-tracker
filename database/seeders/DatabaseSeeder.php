@@ -15,7 +15,11 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-{
+    {
+        $this->call([
+            ActivitySeeder::class,
+        ]);
+
     // Use updateOrCreate to prevent duplicate errors on redeploy
     $recorderUser = User::updateOrCreate(
         ['email' => 'recorder@example.com'],
@@ -57,5 +61,5 @@ class DatabaseSeeder extends Seeder
             'created_by' => $recorderUser->id,
         ]);
     }
-}
+    }
 }

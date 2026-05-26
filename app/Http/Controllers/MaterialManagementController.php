@@ -21,6 +21,8 @@ class MaterialManagementController extends Controller
 
         $project = Project::findOrFail($projectId);
 
+        $this->authorize('view', $project);
+
         $usages = MaterialUsage::where('project_id', $project->id)
             ->with(['user', 'project'])
             ->orderBy('date', 'desc')

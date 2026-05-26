@@ -12,6 +12,7 @@ class ProductivityLog extends Model
         'user_id',
         'date',
         'activity',
+        'activity_id',
         'equipment_name',
         'workers',
         'output',
@@ -39,6 +40,11 @@ class ProductivityLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 
     /**

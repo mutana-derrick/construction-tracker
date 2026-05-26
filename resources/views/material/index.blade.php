@@ -187,6 +187,7 @@
                             <tr class="border-b border-gray-200">
                                 <th class="px-4 py-3 text-left font-semibold text-gray-900">Date</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-900">Material</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-900">Activity</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-900">Used Qty</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-900">Cost / Item</th>
                                 <th class="px-4 py-3 text-left font-semibold text-gray-900">Total</th>
@@ -198,6 +199,7 @@
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-4 py-4 text-gray-600">{{ $cost->date->format('M d, Y') }}</td>
                                     <td class="px-4 py-4 font-medium text-gray-900">{{ $cost->material_name }}</td>
+                                    <td class="px-4 py-4 text-gray-600">{{ $cost->activity?->name ?? 'Unassigned Activity' }}</td>
                                     <td class="px-4 py-4 text-gray-600">{{ number_format($cost->used_qty, 2) }}</td>
                                     <td class="px-4 py-4 text-gray-600">Rwf {{ number_format($cost->cost_per_item, 0) }}</td>
                                     <td class="px-4 py-4 font-semibold text-gray-900">Rwf {{ number_format($cost->total, 0) }}</td>

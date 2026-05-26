@@ -11,6 +11,8 @@ class MaterialCost extends Model
         'project_id',
         'user_id',
         'date',
+        'activity',
+        'activity_id',
         'material_name',
         'used_qty',
         'cost_per_item',
@@ -40,5 +42,10 @@ class MaterialCost extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 }

@@ -46,7 +46,7 @@
                 <td class="label">Month</td>
                 <td>{{ $monthName }} {{ $year }}</td>
                 <td class="label">Generated At</td>
-                <td>{{ now()->format('F j, Y g:i A') }}</td>
+                <td>{{ now()->format('F j, Y') }}</td>
             </tr>
         </table>
     </div>

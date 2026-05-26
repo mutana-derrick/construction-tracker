@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\MaterialCost;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -15,7 +16,16 @@ class MaterialCostController extends Controller
     public function index(Request $request)
     {
         $projectId = $request->query('project_id');
+
+        if (!$projectId) {
+            return redirect()
+                ->route('projects.select')
+                ->with('error', 'Please select a project first.');
+        }
+
         $project = Project::findOrFail($projectId);
+
+        $this->authorize('view', $project);
 
         // Get all material cost logs for this project
         $logs = MaterialCost::where('project_id', $projectId)
@@ -36,13 +46,23 @@ class MaterialCostController extends Controller
     public function create(Request $request)
     {
         $projectId = $request->query('project_id');
+
+        if (!$projectId) {
+            return redirect()
+                ->route('projects.select')
+                ->with('error', 'Please select a project first.');
+        }
+
         $project = Project::findOrFail($projectId);
+
+        $this->authorize('view', $project);
 
         // Check authorization
         $this->authorize('create', MaterialCost::class);
 
         return view('material-costs.create', [
             'project' => $project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -57,10 +77,15 @@ class MaterialCostController extends Controller
         // Validate input
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
+            'activity_id' => 'required|exists:activities,id',
             'material_name' => 'required|string|max:100',
             'used_qty' => 'required|numeric|min:0',
             'cost_per_item' => 'required|numeric|min:0',
         ]);
+
+        $project = Project::findOrFail($validated['project_id']);
+
+        $this->authorize('view', $project);
 
         // Auto-assign current user and today's date
         $validated['user_id'] = Auth::id();
@@ -111,6 +136,7 @@ class MaterialCostController extends Controller
         return view('material-costs.edit', [
             'log' => $materialCost,
             'project' => $materialCost->project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -126,6 +152,7 @@ class MaterialCostController extends Controller
 
         // Validate input
         $validated = $request->validate([
+            'activity_id' => 'required|exists:activities,id',
             'material_name' => 'required|string|max:100',
             'used_qty' => 'required|numeric|min:0',
             'cost_per_item' => 'required|numeric|min:0',

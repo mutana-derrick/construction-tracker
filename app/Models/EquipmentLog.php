@@ -14,6 +14,7 @@ class EquipmentLog extends Model
         'equipment_type',
         'equipment_id',
         'activity',
+        'activity_id',
         'planned_output',
         'actual_output',
         'working_hours',
@@ -47,6 +48,11 @@ class EquipmentLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activity(): BelongsTo
+    {
+        return $this->belongsTo(Activity::class);
     }
 
     /**

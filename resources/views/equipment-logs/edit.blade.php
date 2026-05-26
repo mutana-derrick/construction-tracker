@@ -97,14 +97,102 @@
             </div>
           </div>
 
-          <!-- Activity -->
-          <div>
-              <label for="activity" class="block text-sm font-semibold text-gray-900 mb-2">Activity / Work Performed *</label>
-              <input type="text" id="activity" name="activity" class="w-full px-4 py-2.5 border @error('activity') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
-                  placeholder="e.g., Site excavation, Foundation preparation" 
-                  value="{{ old('activity', $log->activity) }}" @if (!$canEdit) disabled @endif required>
-              @error('activity') <div class="flex items-center gap-2 text-red-600 text-sm mt-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>{{ $message }}</div> @enderror
+      <!-- Activity -->
+      <div
+        x-data="{
+          open: false,
+          search: '',
+          selectedId: '{{ old('activity_id', (string) $log->activity_id) }}',
+          selectedName: (function(){
+            const map = @js(collect($activities)->keyBy('id')->map(fn($a) => $a->name));
+            const id = '{{ old('activity_id', (string) $log->activity_id) }}';
+            return id && map[id] ? map[id] : '';
+          })(),
+          activities: @js($activities->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->values()),
+          get filtered() {
+            const q = this.search.trim().toLowerCase();
+            if (!q) return this.activities;
+            return this.activities.filter(a => a.name.toLowerCase().includes(q));
+          },
+          choose(a) {
+            this.selectedId = String(a.id);
+            this.selectedName = a.name;
+            this.search = '';
+            this.open = false;
+          },
+          clear() {
+            this.selectedId = '';
+            this.selectedName = '';
+            this.search = '';
+          }
+        }"
+        class="relative"
+      >
+        <label class="block text-sm font-semibold text-gray-900 mb-2">Activity / Work Performed *</label>
+
+        <input type="hidden" name="activity_id" x-model="selectedId" required>
+
+        <button
+          type="button"
+          class="w-full px-4 py-2.5 border @error('activity_id') border-red-500 @else border-gray-200 @enderror rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm"
+          @click="open = !open"
+          @keydown.escape.window="open = false"
+          @if (!$canEdit) disabled @endif
+        >
+          <span x-show="selectedName" x-text="selectedName" class="text-gray-900"></span>
+          <span x-show="!selectedName" class="text-gray-500">Select an activity</span>
+        </button>
+
+        @if ($canEdit)
+        <div
+          x-show="open"
+          x-transition
+          @click.outside="open = false"
+          class="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+        >
+          <div class="p-2 border-b border-gray-200">
+            <input
+              type="text"
+              x-model="search"
+              placeholder="Search activities..."
+              class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+            />
           </div>
+
+          <ul class="max-h-56 overflow-auto py-1">
+            <template x-for="a in filtered" :key="a.id">
+              <li>
+                <button
+                  type="button"
+                  class="w-full px-4 py-2 text-left hover:bg-yellow-50 flex items-center justify-between"
+                  @click="choose(a)"
+                >
+                  <span x-text="a.name" class="text-gray-900"></span>
+                  <span x-show="selectedId === String(a.id)" class="text-yellow-600 font-semibold">Selected</span>
+                </button>
+              </li>
+            </template>
+
+            <li x-show="filtered.length === 0" class="px-4 py-2 text-sm text-gray-500">
+              No activities found.
+            </li>
+          </ul>
+
+          <div class="p-2 border-t border-gray-200 flex justify-end">
+            <button type="button" class="text-sm text-gray-600 hover:text-gray-900" @click="clear()">
+              Clear
+            </button>
+          </div>
+        </div>
+        @endif
+
+        @error('activity_id')
+        <div class="flex items-center gap-2 text-red-600 text-sm mt-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          {{ $message }}
+        </div>
+        @enderror
+      </div>
         </div>
 
         <!-- Output Section -->

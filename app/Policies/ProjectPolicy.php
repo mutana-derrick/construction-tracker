@@ -20,7 +20,12 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        return true; // Everyone can view projects
+        if ($user->role === 'viewer') {
+            return true;
+        }
+
+        return $user->role === 'recorder'
+            && $project->created_by === $user->id;
     }
 
     /**
@@ -36,7 +41,8 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        return $user->role === 'recorder' && $user->id === $project->created_by;
+        return $user->role === 'recorder' && $project->created_by === $user->id;
+            
     }
 
     /**

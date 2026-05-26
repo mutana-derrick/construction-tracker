@@ -22,15 +22,102 @@
             | Time Elapsed: <strong>{{ $minutesElapsed }} minutes</strong>
             | Time Remaining: <strong>{{ max(0, $minutesRemaining) }} minutes</strong>
         </p>
-    </div>
+                <!-- Activity / Work Type -->
+                <div
+                    x-data="{
+                        open: false,
+                        search: '',
+                        selectedId: '{{ old('activity_id', $cost->activity_id) }}',
+                        selectedName: (function(){
+                            const map = @js(collect($activities)->keyBy('id')->map(fn($a) => $a->name));
+                            const id = '{{ old('activity_id', $cost->activity_id) }}';
+                            return id && map[id] ? map[id] : '';
+                        })(),
+                        activities: @js($activities->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->values()),
+                        get filtered() {
+                            const q = this.search.trim().toLowerCase();
+                            if (!q) return this.activities;
+                            return this.activities.filter(a => a.name.toLowerCase().includes(q));
+                        },
+                        choose(a) {
+                            this.selectedId = String(a.id);
+                            this.selectedName = a.name;
+                            this.search = '';
+                            this.open = false;
+                        },
+                        clear() {
+                            this.selectedId = '';
+                            this.selectedName = '';
+                            this.search = '';
+                        }
+                    }"
+                    class="relative"
+                >
+                    <label class="block text-sm font-semibold text-gray-900 mb-2">Activity / Work Type *</label>
 
-    <!-- Form -->
-    <form action="{{ route('equipment-costs.update', $cost) }}" method="POST" class="bg-white rounded-xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-shadow">
-        @csrf
-        @method('PUT')
+                    <input type="hidden" name="activity_id" x-model="selectedId" required>
 
-        <!-- Error Messages -->
-        @if ($errors->any())
+                    <button
+                        type="button"
+                        class="w-full px-4 py-2.5 border @error('activity_id') border-red-500 @else border-gray-200 @enderror rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm"
+                        @click="if ({{ $canEdit ? 'true' : 'false' }}) open = !open"
+                        @keydown.escape.window="open = false"
+                        :disabled="{{ $canEdit ? 'false' : 'true' }}"
+                    >
+                        <span x-show="selectedName" x-text="selectedName" class="text-gray-900"></span>
+                        <span x-show="!selectedName" class="text-gray-500">Select an activity</span>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        x-transition
+                        @click.outside="open = false"
+                        class="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+                    >
+                        <div class="p-2 border-b border-gray-200">
+                            <input
+                                type="text"
+                                x-model="search"
+                                placeholder="Search activities..."
+                                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                                {{ !$canEdit ? 'disabled' : '' }}
+                            />
+                        </div>
+
+                        <ul class="max-h-56 overflow-auto py-1">
+                            <template x-for="a in filtered" :key="a.id">
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="w-full px-4 py-2 text-left hover:bg-yellow-50 flex items-center justify-between"
+                                        @click="choose(a)"
+                                        {{ !$canEdit ? 'disabled' : '' }}
+                                    >
+                                        <span x-text="a.name" class="text-gray-900"></span>
+                                        <span x-show="selectedId === String(a.id)" class="text-yellow-600 font-semibold">Selected</span>
+                                    </button>
+                                </li>
+                            </template>
+
+                            <li x-show="filtered.length === 0" class="px-4 py-2 text-sm text-gray-500">
+                                No activities found.
+                            </li>
+                        </ul>
+
+                        <div class="p-2 border-t border-gray-200 flex justify-end">
+                            <button type="button" class="text-sm text-gray-600 hover:text-gray-900" @click="clear()" {{ !$canEdit ? 'disabled' : '' }}>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+
+                    @error('activity_id')
+                      <div class="flex items-center gap-2 text-red-600 text-sm mt-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {{ $message }}
+                      </div>
+                    @enderror
+                </div>
         <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 shadow-sm">
             <p class="font-semibold text-red-800 mb-2">Please fix the following errors:</p>
             <ul class="list-disc list-inside space-y-1">
@@ -57,12 +144,93 @@
                 @error('equipment_type') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Activity -->
-            <div>
-                <label for="activity" class="block text-sm font-semibold text-gray-900 mb-2">Activity / Work Type *</label>
-                <input type="text" id="activity" name="activity" class="w-full px-4 py-2.5 border @error('activity') border-red-500 @else border-gray-200 @enderror rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm" 
-                    value="{{ old('activity', $cost->activity) }}" required>
-                @error('activity') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+            <!-- Activity / Work Type -->
+            <div
+                x-data="{
+                    open: false,
+                    search: '',
+                    selectedId: '{{ old('activity_id', $cost->activity_id) }}',
+                    selectedName: (function(){
+                        const map = @js(collect($activities)->keyBy('id')->map(fn($a) => $a->name));
+                        const id = '{{ old('activity_id', $cost->activity_id) }}';
+                        return id && map[id] ? map[id] : '';
+                    })(),
+                    activities: @js($activities->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->values()),
+                    get filtered() {
+                        const q = this.search.trim().toLowerCase();
+                        if (!q) return this.activities;
+                        return this.activities.filter(a => a.name.toLowerCase().includes(q));
+                    },
+                    choose(a) {
+                        this.selectedId = String(a.id);
+                        this.selectedName = a.name;
+                        this.search = '';
+                        this.open = false;
+                    },
+                    clear() {
+                        this.selectedId = '';
+                        this.selectedName = '';
+                        this.search = '';
+                    }
+                }"
+                class="relative"
+            >
+                <label class="block text-sm font-semibold text-gray-900 mb-2">Activity / Work Type *</label>
+
+                <input type="hidden" name="activity_id" x-model="selectedId" required>
+
+                <button
+                    type="button"
+                    class="w-full px-4 py-2.5 border @error('activity_id') border-red-500 @else border-gray-200 @enderror rounded-lg bg-white text-left focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition-all shadow-sm"
+                    @click="open = !open"
+                    @keydown.escape.window="open = false"
+                >
+                    <span x-show="selectedName" x-text="selectedName" class="text-gray-900"></span>
+                    <span x-show="!selectedName" class="text-gray-500">Select an activity</span>
+                </button>
+
+                <div
+                    x-show="open"
+                    x-transition
+                    @click.outside="open = false"
+                    class="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+                >
+                    <div class="p-2 border-b border-gray-200">
+                        <input
+                            type="text"
+                            x-model="search"
+                            placeholder="Search activities..."
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                        />
+                    </div>
+
+                    <ul class="max-h-56 overflow-auto py-1">
+                        <template x-for="a in filtered" :key="a.id">
+                            <li>
+                                <button
+                                    type="button"
+                                    class="w-full px-4 py-2 text-left hover:bg-yellow-50 flex items-center justify-between"
+                                    @click="choose(a)"
+                                >
+                                    <span x-text="a.name" class="text-gray-900"></span>
+                                    <span x-show="selectedId === String(a.id)" class="text-yellow-600 font-semibold">Selected</span>
+                                </button>
+                            </li>
+                        </template>
+
+                        <li x-show="filtered.length === 0" class="px-4 py-2 text-sm text-gray-500">
+                            No activities found.
+                        </li>
+                    </ul>
+
+                    <div class="p-2 border-t border-gray-200 flex justify-end">
+                        <button type="button" class="text-sm text-gray-600 hover:text-gray-900" @click="clear()">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                @error('activity_id') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>
         </div>
 

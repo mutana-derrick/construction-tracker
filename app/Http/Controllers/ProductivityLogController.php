@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\ProductivityLog;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -15,7 +16,16 @@ class ProductivityLogController extends Controller
     public function index(Request $request)
     {
         $projectId = $request->query('project_id');
+
+        if (!$projectId) {
+            return redirect()
+                ->route('projects.select')
+                ->with('error', 'Please select a project first.');
+        }
+
         $project = Project::findOrFail($projectId);
+
+        $this->authorize('view', $project);
 
         // Get all productivity logs for this project
         $logs = ProductivityLog::where('project_id', $projectId)
@@ -36,13 +46,23 @@ class ProductivityLogController extends Controller
     public function create(Request $request)
     {
         $projectId = $request->query('project_id');
+
+        if (!$projectId) {
+            return redirect()
+                ->route('projects.select')
+                ->with('error', 'Please select a project first.');
+        }
+
         $project = Project::findOrFail($projectId);
+
+        $this->authorize('view', $project);
 
         // Check authorization
         $this->authorize('create', ProductivityLog::class);
 
         return view('productivity-logs.create', [
             'project' => $project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -57,12 +77,16 @@ class ProductivityLogController extends Controller
         // Validate input
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'equipment_name' => 'required|string|max:100',
             'workers' => 'required|integer|min:1',
             'output' => 'required|numeric|min:0',
             'comment' => 'nullable|string|max:500',
         ]);
+
+        $project = Project::findOrFail($validated['project_id']);
+
+        $this->authorize('view', $project);
 
         // Auto-assign current user and today's date
         $validated['user_id'] = Auth::id();
@@ -110,6 +134,7 @@ class ProductivityLogController extends Controller
         return view('productivity-logs.edit', [
             'log' => $productivityLog,
             'project' => $productivityLog->project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -125,7 +150,7 @@ class ProductivityLogController extends Controller
 
         // Validate input
         $validated = $request->validate([
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'equipment_name' => 'required|string|max:100',
             'workers' => 'required|integer|min:1',
             'output' => 'required|numeric|min:0',

@@ -131,6 +131,7 @@
                 <thead>
                     <tr class="border-b border-gray-200">
                         <th class="px-6 py-4 text-left font-semibold text-gray-900">Date</th>
+                        <th class="px-6 py-4 text-left font-semibold text-gray-900">Activity</th>
                         <th class="px-6 py-4 text-left font-semibold text-gray-900">Material Name</th>
                         <th class="px-6 py-4 text-left font-semibold text-gray-900">Quantity Used</th>
                         <th class="px-6 py-4 text-left font-semibold text-gray-900">Cost/Item</th>
@@ -144,6 +145,9 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="text-gray-900 font-medium">{{ $log->date->format('M d, Y') }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-gray-900">{{ $log->activity?->name ?? 'Unassigned Activity' }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-gray-900 font-medium">{{ $log->material_name }}</span>

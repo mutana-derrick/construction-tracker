@@ -45,6 +45,10 @@
                 <h3 class="font-semibold text-gray-900 mb-4">📦 Material Information</h3>
                 <dl class="space-y-3">
                     <div>
+                        <dt class="text-sm font-medium text-gray-600">Activity</dt>
+                        <dd class="text-lg font-semibold text-gray-900">{{ $log->activity ?? 'Unassigned Activity' }}</dd>
+                    </div>
+                    <div>
                         <dt class="text-sm font-medium text-gray-600">Material Name</dt>
                         <dd class="text-lg font-semibold text-gray-900">{{ $log->material_name }}</dd>
                     </div>

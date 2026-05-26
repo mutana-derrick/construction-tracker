@@ -106,7 +106,7 @@
                 </svg>
                 Equipment Cost
               </a> --}}
-              <a
+              {{-- <a
                 href="{{ route('productivity-logs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('productivity-logs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"
               >
@@ -114,7 +114,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                 </svg>
                 Productivity
-              </a>
+              </a> --}}
               <a
                 href="{{ route('casual-labour-logs.index', ['project_id' => $currentProject->id]) }}"
                 class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all {{ request()->routeIs('casual-labour-logs.*') ? 'bg-yellow-100 text-yellow-900' : 'text-gray-700 hover:bg-gray-50' }}"

@@ -147,6 +147,17 @@
           </div>
           <h3 class="text-xl font-semibold text-gray-900 mb-2">No projects yet</h3>
           <p class="text-gray-600 mb-6 max-w-md mx-auto">Create your first project to start tracking construction productivity and costs.</p>
+            @can('create', \App\Models\Project::class)
+              <a
+                  href="{{ route('projects.create') }}"
+                  class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"> </path>
+                  </svg>        
+                  Create First Project
+              </a>
+            @endcan
         </div>
       @endif
     </div>

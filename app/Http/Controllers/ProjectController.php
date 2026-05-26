@@ -12,9 +12,15 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with('creator')
+        $query = Project::with('creator');
+
+        if (auth()->user()->role === 'recorder') {
+            $query->where('created_by', auth()->id());
+        }
+
+        $projects = $query
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(10);
 
         return view('projects.index', [
             'projects' => $projects,
@@ -42,6 +48,8 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'budget' => 'nullable|numeric|min:0',
+            'start_date' => 'nullable|date',
         ]);
 
         $validated['created_by'] = auth()->id();
@@ -57,6 +65,8 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $this->authorize('view', $project);
+        
         $project->load(['equipmentLogs', 'equipmentCosts', 'productivityLogs', 'casualLabourLogs', 'materialUsage', 'materialCosts']);
 
         return view('projects.show', [
@@ -87,6 +97,8 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'budget' => 'nullable|numeric|min:0',
+            'start_date' => 'nullable|date',
         ]);
 
         $project->update($validated);

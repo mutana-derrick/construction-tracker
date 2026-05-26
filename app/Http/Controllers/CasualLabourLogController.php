@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\CasualLabourLog;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -15,7 +16,16 @@ class CasualLabourLogController extends Controller
     public function index(Request $request)
     {
         $projectId = $request->query('project_id');
+
+        if (!$projectId) {
+            return redirect()
+                ->route('projects.select')
+                ->with('error', 'Please select a project first.');
+        }
+
         $project = Project::findOrFail($projectId);
+
+        $this->authorize('view', $project);
 
         // Get all casual labour logs for this project
         $logs = CasualLabourLog::where('project_id', $projectId)
@@ -36,13 +46,23 @@ class CasualLabourLogController extends Controller
     public function create(Request $request)
     {
         $projectId = $request->query('project_id');
+
+        if (!$projectId) {
+            return redirect()
+                ->route('projects.select')
+                ->with('error', 'Please select a project first.');
+        }
+
         $project = Project::findOrFail($projectId);
+
+        $this->authorize('view', $project);
 
         // Check authorization
         $this->authorize('create', CasualLabourLog::class);
 
         return view('casual-labour-logs.create', [
             'project' => $project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -57,11 +77,15 @@ class CasualLabourLogController extends Controller
         // Validate input
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'labour_classification' => 'required|string|max:100',
             'number_of_workers' => 'required|integer|min:1',
             'wage' => 'required|numeric|min:0',
         ]);
+
+        $project = Project::findOrFail($validated['project_id']);
+
+        $this->authorize('view', $project);
 
         // Auto-assign current user and today's date
         $validated['user_id'] = Auth::id();
@@ -112,6 +136,7 @@ class CasualLabourLogController extends Controller
         return view('casual-labour-logs.edit', [
             'log' => $casualLabourLog,
             'project' => $casualLabourLog->project,
+            'activities' => Activity::orderBy('name')->get(),
         ]);
     }
 
@@ -127,7 +152,7 @@ class CasualLabourLogController extends Controller
 
         // Validate input
         $validated = $request->validate([
-            'activity' => 'required|string|max:255',
+            'activity_id' => 'required|exists:activities,id',
             'labour_classification' => 'required|string|max:100',
             'number_of_workers' => 'required|integer|min:1',
             'wage' => 'required|numeric|min:0',

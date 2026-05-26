@@ -12,12 +12,18 @@ class ProjectSelectionController extends Controller
      */
     public function index(Request $request)
     {
-        $projects = Project::query()
+        $query = Project::query()
             ->withCount([
                 'equipmentLogs',
                 'equipmentCosts',
             ])
-            ->withSum('equipmentCosts', 'total_cost')
+            ->withSum('equipmentCosts', 'total_cost');
+
+        if (auth()->user()->role === 'recorder') {
+            $query->where('created_by', auth()->id());
+        }
+
+        $projects = $query
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -32,7 +38,8 @@ class ProjectSelectionController extends Controller
      */
     public function select(Request $request, Project $project)
     {
-        // Store selected project in session
+        $this->authorize('view', $project);
+
         session(['selected_project_id' => $project->id]);
 
         return redirect()->route('projects.show', $project);
