@@ -127,6 +127,7 @@ class EquipmentCostController extends Controller
             'cost' => $equipmentCost,
             'project' => $equipmentCost->project,
             'activities' => Activity::orderBy('name')->get(),
+            'canEdit' => Auth::check() && Auth::user()->can('update', $equipmentCost),
         ]);
     }
 

@@ -65,9 +65,9 @@
             <label for="password" class="block text-sm font-semibold text-gray-900">
               Password
             </label>
-            <a href="{{ route('password.request') }}" class="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors">
+            {{-- <a href="{{ route('password.request') }}" class="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors">
               Forgot?
-            </a>
+            </a> --}}
           </div>
           <input
             id="password"
