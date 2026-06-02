@@ -147,7 +147,7 @@
                             <span class="text-gray-900 font-medium">{{ $log->date->format('M d, Y') }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-gray-900">{{ $log->activity?->name ?? 'Unassigned Activity' }}</span>
+                            <span class="text-gray-900">{{ $log->activity ?? 'Unassigned Activity' }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-gray-900 font-medium">{{ $log->material_name }}</span>
