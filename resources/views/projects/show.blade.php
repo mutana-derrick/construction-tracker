@@ -78,8 +78,8 @@
       <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow shadow-sm">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Equipment Logs</p>
-            <p class="text-3xl font-bold text-gray-900 mt-3">{{ $project->equipmentLogs->count() }}</p>
+            <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Material Cost</p>
+            <p class="text-3xl font-bold text-gray-900 mt-3">Rwf {{ number_format($project->materialCosts->sum('total'), 0) }}</p>
           </div>
           <div class="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center border border-yellow-200 shadow-sm">
             <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

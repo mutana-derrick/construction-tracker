@@ -22,8 +22,8 @@
                 <p class="text-gray-700 mt-1">This record can only be edited within 5 minutes of creation.</p>
             </div>
             <div class="text-right">
-                <p class="text-4xl font-bold text-yellow-600">{{ $minutesRemaining }}</p>
-                <p class="text-sm text-yellow-700">minute{{ $minutesRemaining != 1 ? 's' : '' }} left</p>
+                <p class="text-4xl font-bold text-yellow-600">{{ $minutesLeft }}</p>
+                <p class="text-sm text-yellow-700">minute{{ $minutesLeft != 1 ? 's' : '' }} left</p>
             </div>
         </div>
         <p class="text-xs text-yellow-700 mt-3">Created at {{ $log->created_at->format('g:i A') }} • Save your changes immediately</p>
